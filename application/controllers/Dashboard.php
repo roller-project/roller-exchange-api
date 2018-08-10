@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends API_Controller {
+class Dashboard extends API_Public {
 
 	
 	public function index_get()
@@ -12,4 +12,6 @@ class Dashboard extends API_Controller {
 		];
 		$this->view($arv);
 	}
+
+	
 }

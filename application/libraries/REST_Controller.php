@@ -599,6 +599,7 @@ abstract class REST_Controller extends CI_Controller {
      */
     private function get_local_config($config_file)
     {
+        
         if(file_exists(__DIR__."/../config/".$config_file.".php"))
         {
             $config = array();
@@ -611,6 +612,8 @@ abstract class REST_Controller extends CI_Controller {
         }
 
         $this->load->config($config_file, FALSE, TRUE);
+        
+       
     }
 
     /**
