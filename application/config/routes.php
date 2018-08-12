@@ -58,3 +58,4 @@ $route['account'] = 'privateapi';
 $route['account/(:any)'] = 'privateapi/$1';
 $route['market'] = 'marketapi';
 $route['market/(:any)'] = 'marketapi/$1';
+$route['server/(:any)'] = 'serverapi/$1';

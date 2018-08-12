@@ -10,9 +10,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
         '6b06ce8ccf69c43a60a1e48495a034c9' => __DIR__ . '/..' . '/react/promise-timer/src/functions.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -22,6 +23,7 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         ),
         'W' => 
         array (
+            'Workerman\\' => 10,
             'Webmozart\\Assert\\' => 17,
         ),
         'S' => 
@@ -31,6 +33,7 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\HttpFoundation\\' => 33,
+            'Symfony\\Component\\EventDispatcher\\' => 34,
         ),
         'R' => 
         array (
@@ -42,11 +45,13 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'React\\Dns\\' => 10,
             'React\\Cache\\' => 12,
             'Ratchet\\RFC6455\\' => 16,
+            'Ratchet\\Client\\' => 15,
             'Ratchet\\' => 8,
         ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
+            'PHPSocketIO\\' => 12,
         ),
         'G' => 
         array (
@@ -65,6 +70,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'Workerman\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/workerman',
         ),
         'Webmozart\\Assert\\' => 
         array (
@@ -89,6 +98,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'Symfony\\Component\\HttpFoundation\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
+        ),
+        'Symfony\\Component\\EventDispatcher\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
         ),
         'React\\Stream\\' => 
         array (
@@ -122,6 +135,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         array (
             0 => __DIR__ . '/..' . '/ratchet/rfc6455/src',
         ),
+        'Ratchet\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ratchet/pawl/src',
+        ),
         'Ratchet\\' => 
         array (
             0 => __DIR__ . '/..' . '/cboden/ratchet/src/Ratchet',
@@ -129,6 +146,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'PHPSocketIO\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/modules/PHPSocketIO',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -152,6 +173,13 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
                 0 => __DIR__ . '/..' . '/mikey179/vfsStream/src/main/php',
             ),
         ),
+        'R' => 
+        array (
+            'React\\ZMQ' => 
+            array (
+                0 => __DIR__ . '/..' . '/react/zmq/src',
+            ),
+        ),
         'P' => 
         array (
             'Prophecy\\' => 
@@ -169,6 +197,7 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
     );
 
     public static $classMap = array (
+        'Binance\\API' => __DIR__ . '/..' . '/jaggedsoft/php-binance-api/php-binance-api.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',

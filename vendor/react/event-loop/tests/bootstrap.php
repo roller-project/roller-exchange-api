@@ -1,9 +1,7 @@
 <?php
 
-if (!defined('SIGUSR1')) {
-    define('SIGUSR1', 1);
+$loader = @include __DIR__ . '/../vendor/autoload.php';
+if (!$loader) {
+    $loader = require __DIR__ . '/../../../../vendor/autoload.php';
 }
-
-if (!defined('SIGUSR2')) {
-    define('SIGUSR2', 2);
-}
+$loader->addPsr4('React\\Tests\\EventLoop\\', __DIR__);

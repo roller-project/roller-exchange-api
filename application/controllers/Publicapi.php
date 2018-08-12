@@ -11,11 +11,11 @@ class Publicapi extends API_Public {
 	}
 
 	public function register_post(){
-		$username = $this->input->post("username");
+		
 		$password = $this->input->post("password");
 		$email = $this->input->post("email");
 
-        $id = $this->author->register($username, $password, $email);
+        $id = $this->author->register($email, $password);
         
 		$arv = [
 			"msg" => "connect",

@@ -16,7 +16,13 @@ class ExtEventLoopTest extends AbstractLoopTest
             $this->markTestSkipped('ext-event tests skipped because ext-event is not installed.');
         }
 
-        return new ExtEventLoop();
+        $cfg = null;
+        if ($readStreamCompatible) {
+            $cfg = new \EventConfig();
+            $cfg->requireFeatures(\EventConfig::FEATURE_FDS);
+        }
+
+        return new ExtEventLoop($cfg);
     }
 
     public function createStream()
@@ -76,9 +82,9 @@ class ExtEventLoopTest extends AbstractLoopTest
         $this->loop->addReadStream($input, $this->expectCallableExactly(2));
 
         fwrite($input, "foo\n");
-        $this->tickLoop($this->loop);
+        $this->loop->tick();
 
         fwrite($input, "bar\n");
-        $this->tickLoop($this->loop);
+        $this->loop->tick();
     }
 }

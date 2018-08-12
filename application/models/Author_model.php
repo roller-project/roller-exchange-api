@@ -1,13 +1,13 @@
 <?php
 class Author_Model extends DB_Model{
-	public function login($username, $password) {
-        if($username == 'hello' && $password == 'world')
-        {
-            return true;            
-        }
-        else
-        {
-            return false;           
-        }           
+	public function register($username, $password) {
+        $validate_email = $this->validate_email($email);    
+    }
+
+
+    public function validate_email($email){
+
+        $email = trim(strtolower($email));
+        $this->db->where("email",$email);
     }
 }

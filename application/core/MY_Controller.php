@@ -31,3 +31,11 @@ class API_Private extends API_Controller{
 		
 	}
 }
+
+class ServerController extends CI_Controller{
+	function __construct()
+	{
+		parent::__construct();
+		
+	}
+}
