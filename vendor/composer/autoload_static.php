@@ -14,17 +14,26 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '3be16222a6efa6dd226a219eaaff823b' => __DIR__ . '/..' . '/ratchet/pawl/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
+            'phpseclib\\' => 10,
             'phpDocumentor\\Reflection\\' => 25,
+        ),
+        'k' => 
+        array (
+            'kornrunner\\' => 11,
         ),
         'W' => 
         array (
             'Workerman\\' => 10,
             'Webmozart\\Assert\\' => 17,
+            'Web3\\' => 5,
         ),
         'S' => 
         array (
@@ -53,23 +62,41 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'Psr\\Http\\Message\\' => 17,
             'PHPSocketIO\\' => 12,
         ),
+        'J' => 
+        array (
+            'JsonRPC\\' => 8,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
         ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
         ),
+        'B' => 
+        array (
+            'Blockchain\\' => 11,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpseclib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+        ),
+        'kornrunner\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kornrunner/keccak/src',
         ),
         'Workerman\\' => 
         array (
@@ -78,6 +105,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Web3\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/modules/Web3',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
@@ -151,9 +182,21 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         array (
             0 => __DIR__ . '/../..' . '/modules/PHPSocketIO',
         ),
+        'JsonRPC\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/modules/JsonRPC',
+        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
         'Doctrine\\Instantiator\\' => 
         array (
@@ -162,6 +205,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Blockchain\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/modules/Blockchain',
         ),
     );
 

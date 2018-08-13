@@ -10,6 +10,8 @@ class Publicapi extends API_Public {
 		$this->view($arv);
 	}
 
+	
+	
 	public function register_post(){
 		
 		$password = $this->input->post("password");

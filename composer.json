@@ -11,22 +11,29 @@
 		"source": "https://github.com/bcit-ci/CodeIgniter"
 	},
 	"require": {
-		"php": ">=5.3.7",
+		"php": "^7.1",
 		"cboden/ratchet": "^0.4.1",
 		"react/zmq": "0.2.*|0.3.*",
 		"jaggedsoft/php-binance-api": "^0.4.4",
 		"workerman/workerman": "^3.5",
 		"symfony/http-foundation":  ">=2.2",
-		"symfony/event-dispatcher": ">=2.3"
+		"symfony/event-dispatcher": ">=2.3",
+		"guzzlehttp/guzzle": "~6.0",
+        "kornrunner/keccak": "~1.0",
+		"phpseclib/phpseclib": "~2.0.11"
 	},
 	"autoload": {
 		"psr-4": {
-            "PHPSocketIO\\": "modules/PHPSocketIO/"
+            "PHPSocketIO\\": "modules/PHPSocketIO/",
+            "Blockchain\\": "modules/Blockchain",
+            "Web3\\": "modules/Web3",
+            "JsonRPC\\": "modules/JsonRPC"
 		}
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x",
-		"ext-event": "1.8.1"
+		"ext-event": "1.8.1",
+		"ext-curl": "*"
 	},
 	"require-dev": {
 		"mikey179/vfsStream": "1.1.*",
