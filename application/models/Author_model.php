@@ -84,6 +84,80 @@ class Author_Model extends DB_Model{
     public function AccountList(){
     	$this->is_admin();
     	$this->db->limit($this->limit,$this->start);
+        $this->db->join('wallet_btc', 'wallet_btc.users_id = account.id', 'left');
     	return $this->db->get("account")->result();
+    }
+
+    public function addWallet($address, $symbol){
+
+        if($symbol == "BTC"){
+            $check = $this->CheckWalletAccount("BTC");
+            if(!$check){
+                $arv = [
+                    "btc_address" => $address,
+                    "users_id" => $this->getLoginID(),
+                ];
+                $this->db->insert("wallet_btc",$arv);
+            }
+        }else{
+            $check = $this->CheckWalletAccount($symbol);
+            if(!$check){
+                $arv = [
+                    "alt_address" => $address,
+                    "users_id" => $this->getLoginID(),
+                    "alt_symbol" => $symbol
+                ];
+                $this->db->insert("wallet_alt",$arv);
+            }
+        }
+    }
+
+
+
+
+    public function CheckWalletAccount($symbol){
+        if($symbol == "BTC"){
+            $this->db->where("users_id", $this->getLoginID());
+            $count = $this->db->count_all_results("wallet_btc");
+            if($count > 0) return true;
+        }else{
+            $this->db->where("users_id", $this->getLoginID());
+            $this->db->where("alt_symbol", $symbol);
+            
+            $count = $this->db->count_all_results("wallet_alt");
+            if($count > 0) return true;
+        }
+        return false;
+    }
+
+
+    public function deposit($symbol, $address, $amount, $txtid=""){
+        if($symbol == "BTC"){
+
+            /*
+            BTC Deposit
+            */
+            $this->db->where("btc_address",$address);
+            $data = $this->db->get("wallet_btc")->row();
+
+            $arv = [
+                "btc_deposit" => $data->btc_deposit + $amount,
+                "updated"   => date("Y-m-d h:i:s"),
+            ];
+            $this->db->update("wallet_btc", $arv,["id" => $data->id]);
+            $this->writeLog("Deposit ".$amount." BTC ");
+
+        }else{
+
+            /*
+            Alt Coin Deposit
+            */
+
+        }
+    }
+
+
+    public function writeLog($content=""){
+
     }
 }

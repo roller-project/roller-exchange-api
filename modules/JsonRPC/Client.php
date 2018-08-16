@@ -114,6 +114,7 @@ class Client
                 'id'     => $this->rpcId++,
             ];
 
+            
             $response = $this->client->request('POST', '/', ['json' => $json]);
 
             if ($response->hasError()) {

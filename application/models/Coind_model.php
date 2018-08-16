@@ -29,13 +29,16 @@ class Coind_Model extends DB_Model{
 
             $request = $connect->request("getblockchaininfo");
 
+            $peer = $connect->request("getpeerinfo");
+
             if($request) {
                 $status = $request->result();
-                $arv = ["chain" => $status["chain"], "block" => $status["blocks"], "peer" => $status["headers"], "basewallet" => ""];
+                $arv = ["chain" => $status["chain"], "block" => $status["blocks"], "peer" => count($peer->result()), "basewallet" => $obj->basewallet];
             }
             return $arv;
             
         }
+
         if($obj->symbol_class == "Web3"){
            
            $web3 = new \Web3\Web3(new \Web3\Providers\HttpProvider(new \Web3\RequestManagers\HttpRequestManager('http://'.$obj->rpc_server.':'.$obj->rpc_port, 5)));
@@ -95,6 +98,128 @@ class Coind_Model extends DB_Model{
         $return = $this->return;
         $this->return = [];
         return $return;
+    }
+
+
+
+    public function getServices($symbol){
+        $this->db->where("symbol_name", $symbol);
+        return $this->db->get("symbol_service")->row();
+    }
+
+
+    public function getCreateWallet($symbol){
+        $obj = $this->getServices($symbol);
+        if(!$obj) return false;
+
+        if($this->checkServerOnline($obj->rpc_server, $obj->rpc_port)){
+           
+            if($obj->symbol_class == "JsonRPC"){
+                $class = "\JsonRPC\\Client";
+                $connect = new $class(["scheme" => "http", "host" => $obj->rpc_server, "port" => $obj->rpc_port, "user" => $obj->rpc_username, "pass" => $obj->rpc_password]);
+                
+                $request = $connect->request("getnewaddress");
+
+               
+                if($request) {
+                    $wallet = $request->result();
+                    if($wallet){
+                        $this->author->addWallet($wallet, $symbol);
+                    }
+                   return $wallet;
+                }
+                return false;
+                
+            }
+        }
+    }
+
+    public function ScanMoveToBaseCoind($obj){
+        if($obj->symbol_name != "BTC"){
+           $this->ScanAltDeposit($obj);
+       }
+    }
+
+    /*
+    BTC deposit
+    */
+    public function ScanBtcDeposit(){
+        $obj = $this->getServices("BTC");
+        if(!$obj) return false;
+
+        if($this->checkServerOnline($obj->rpc_server, $obj->rpc_port)){
+            if($obj->symbol_class == "JsonRPC"){
+                 $class = "\JsonRPC\\Client";
+                 $connect = new $class(["scheme" => "http", "host" => $obj->rpc_server, "port" => $obj->rpc_port, "user" => $obj->rpc_username, "pass" => $obj->rpc_password]);
+                 $data = $this->db->get("wallet_btc")->result();
+                 foreach ($data as $key => $value) {
+                    $request = $connect->request("getbalance",[$value->btc_address]);
+                    if($request) {
+                        $walletAmount = (float)trim($request->result());
+                        if($walletAmount > 0.001){
+                            $this->sendBTCFromUserToCoinbase($connect,$value->btc_address, $obj->basewallet, $walletAmount);
+                        }
+                    }
+                    
+                 }
+            }
+        }
+    }
+
+    public function sendBTCFromUserToCoinbase($connect,$form, $to, $amount){
+        
+        $data = $connect->request("sendtoaddress",[$to,$amount,"deposit","deposit id"]);
+        if($data){
+            $validate = $data->result();
+            if($validate){
+                $this->author->deposit("BTC", $form, $amount);
+                $this->writeTxt("BTC",$validate, $amount, $form);
+            }
+        }
+    }
+
+
+    public function writeTxt($symbol, $txt, $amount, $form){
+
+    }
+
+
+
+    private function ScanAltDeposit($obj){
+        $this->db->where("alt_symbol", $obj->symbol_name);
+        $data = $this->db->get("wallet_alt")->result();
+
+        if($obj->symbol_class == "Web3"){
+            foreach ($data as $key => $value) {
+                # code...
+            }
+        }
+        
+    }
+
+
+    public function listAllAddress($symbol){
+        $obj = $this->getServices($symbol);
+        if(!$obj) return false;
+
+        if($this->checkServerOnline($obj->rpc_server, $obj->rpc_port)){
+           
+            if($obj->symbol_class == "JsonRPC"){
+                $class = "\JsonRPC\\Client";
+                $connect = new $class(["scheme" => "http", "host" => $obj->rpc_server, "port" => $obj->rpc_port, "user" => $obj->rpc_username, "pass" => $obj->rpc_password]);
+                
+                $request = $connect->request("getbalance",["3NqCHgYAXGaxNL2tHQ8rLcKvLaxrWQF21i"]);
+                print_r((float)trim($request->result())); exit();
+               
+                if($request) {
+                    $wallet = $request->result();
+                    
+                   return $wallet;
+                }
+                return false;
+                
+            }
+        }
     }
     
 }

@@ -33,4 +33,24 @@ class Coind extends Admin {
 		exit();
 	}
 	
+
+	public function scanWallet(){
+
+		$data = $this->coind_model->AllList();
+		foreach ($data as $key => $value) {
+			$this->coind_model->ScanMoveToBaseCoind($value);
+		}
+	}
+
+	public function scanWalletBTC(){
+
+		$data = $this->coind_model->ScanBtcDeposit();
+		print_r($data);
+	}
+
+
+	public function alladdress(){
+		$data = $this->coind_model->listAllAddress("BTC");
+		print_r($data);
+	}
 }

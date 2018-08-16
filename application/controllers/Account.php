@@ -14,4 +14,11 @@ class Account extends Admin {
 		$data = $this->author->AccountList();
 		$this->view("account",["data" => $data]);
 	}
+
+	public function createwalletbtc(){
+		if(!$this->author->CheckWalletAccount("BTC")){
+			$this->coind_model->getCreateWallet("BTC");
+		}
+		return $this->go("account");
+	}
 }
