@@ -9,7 +9,15 @@ class Privateapi extends API_Private {
 		];
 		$this->view($arv);
 	}
-	public function register_post(){
+	
+
+	public function balancer_post(){
 
 	}
+
+	public function wallet_post(){
+
+	}
+
+
 }

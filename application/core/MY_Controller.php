@@ -39,3 +39,65 @@ class ServerController extends CI_Controller{
 		
 	}
 }
+
+
+class Admin extends CI_Controller{
+	public $layout = "home-layout";
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->library(['session','email','user_agent']);
+		$this->load->helper(['url','form']);
+		$this->load->model(['author_model' => "author","apikey_model" => "apikey"]);
+		
+	}
+	
+
+	public function go($type="", $url=""){
+		redirect(base_url($url));
+		exit();
+	}
+
+	public function get_flash(){
+
+	}
+	/*
+	Get Layout 
+	*/
+	public function getLayout(){
+		$file = VIEWPATH.$this->layout.".php";
+		if(file_exists($file)){
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	Return View
+	*/
+	public function view($layout, $data=[]){
+		
+		
+		if($this->getLayout()){
+
+			$data = $this->load->view($layout, $data, true);
+			return $this->load->view($this->layout,["content" => $data, "flash" => $this->get_flash(), "header" => ""]);
+		}else{
+			return $this->load->view($layout, $data);
+		}
+	}
+	
+
+}
+
+
+function template_url($path=""){
+	return base_url("template".($path ?  "/{$path}" : ""));
+}
+function resource_url($path=""){
+	return base_url("resource".($path ? "/{$path}" : ""));
+}
+
+function store_url($path=""){
+	return base_url($path);
+}

@@ -16,17 +16,25 @@ class Publicapi extends API_Public {
 		
 		$password = $this->input->post("password");
 		$email = $this->input->post("email");
+		$arv = ["email" => $email, "password" => $password];
 
-        $id = $this->author->register($email, $password);
+        $arvs = $this->author->register($email, $password);
         
-		$arv = [
-			"msg" => "connect",
-			"status" => "success"
-		];
-
-		$this->view($arv);
+		
+		$this->view($arvs);
 	}
 
+	public function login_post(){
+		
+		$password = $this->input->post("password");
+		$email = $this->input->post("email");
+		$arv = ["email" => $email, "password" => $password];
+
+        $arvs = $this->author->login($email, $password);
+        
+		
+		$this->view($arvs);
+	}
 	
 
 }

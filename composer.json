@@ -25,7 +25,6 @@
 	"autoload": {
 		"psr-4": {
             "PHPSocketIO\\": "modules/PHPSocketIO/",
-            "Blockchain\\": "modules/Blockchain",
             "Web3\\": "modules/Web3",
             "JsonRPC\\": "modules/JsonRPC"
 		}

@@ -123,17 +123,8 @@ class Client
 
             return $response;
         } catch (RequestException $exception) {
-            if (
-                $exception->hasResponse() &&
-                $exception->getResponse()->hasError()
-            ) {
-                throw new Exceptions\BitcoindException($exception->getResponse()->error());
-            }
+            return [];
 
-            throw new Exceptions\ClientException(
-                $exception->getMessage(),
-                $exception->getCode()
-            );
         }
     }
 

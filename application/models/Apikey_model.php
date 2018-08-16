@@ -1,5 +1,12 @@
 <?php
 class Apikey_Model extends DB_Model{
+
+
+    public function create_key(){
+
+    }
+
+    
 	public function render(){
 		return $this->_generate_key();
 	}
