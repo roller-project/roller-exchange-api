@@ -54,6 +54,8 @@ class Privateapi extends API_Private {
 		$prices = $this->input->post("prices");
 
 		$this->socketio("New Buy");
+		$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
+		/*
 		$execute = $this->execute_buy($base, $symbol, $amount, $prices);
 		if($execute){
 			$arv = [
@@ -69,6 +71,7 @@ class Privateapi extends API_Private {
 		}else{
 			$this->view([]);
 		}
+		*/
 		
 	}
 

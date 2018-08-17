@@ -3,21 +3,23 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Bottrade extends Robottrade {
 	public function autotrade(){
-		$this->db->order_by("trade_id","DESC");
-		$lastprices = $this->db->get_where("trade_history")->row();
-		$arv = [];
 		
-		for ($i = 0; $i < 20; ++$i)
-		{
-		    $arv[] = (float)$lastprices->prices + (0.00000001 * $i);
-		    $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
-		}
-
 		while (true) {
+			$this->db->order_by("trade_id","DESC");
+			$lastprices = $this->db->get_where("trade_history")->row();
+			$arv = [];
+			
+			for ($i = 0; $i < 20; ++$i)
+			{
+			    $arv[] = (float)$lastprices->prices + (0.00000001 * $i);
+			    $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
+			}
+
 			$key = array_rand($arv,1);
-			//$this->curl("buy",["trade" => "BTC/ROL","prices" => $arv[$key],"amount" => "0.5"]);
-			//echo "Buy ".$arv[$key];
-			$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => "0.5"]);
+			$this->curl("buy",["trade" => "ROL/ROL","prices" => $arv[$key],"amount" => mt_rand(1,380)]);
+			echo "Buy ".$arv[$key];
+			$key = array_rand($arv,1);
+			$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,380)]);
 			echo "Sell ".$arv[$key];
 			sleep(5);
 		}
