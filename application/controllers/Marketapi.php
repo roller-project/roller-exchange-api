@@ -47,7 +47,7 @@ class Marketapi extends API_Public {
 			"buy" => $this->book_buy($symbol, $base),
 			"history" => $this->book_history($symbol, $base),
 		];
-		$this->socketio("Get Trade");
+		
 		$this->view($arv);
 	}
 
