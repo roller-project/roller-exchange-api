@@ -99,7 +99,7 @@ class Privateapi extends API_Private {
 
 		$amount = $this->input->post("amount");
 		$prices = $this->input->post("prices");
-
+		$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
 		$arv = [
 			"base" => $base,
 			"symbol" => $symbol,
