@@ -46,7 +46,7 @@ class Privateapi extends API_Private {
 		}else{
 			$this->view([]);
 		}
-		$this->socketio("Get Trade");
+		$this->socketio("New Buy");
 	}
 
 	/*
@@ -110,6 +110,7 @@ class Privateapi extends API_Private {
 		];
 		$this->db->insert("trade_sell", $arv);
 		$this->view($arv);
+		$this->socketio("New Sell");
 	}
 
 
