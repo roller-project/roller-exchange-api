@@ -36,5 +36,8 @@ class Publicapi extends API_Public {
 		$this->view($arvs);
 	}
 	
-
+	public function chat_post(){
+		$text = $this->input->post("text");
+		$this->socketio($text,"chat");
+	}
 }

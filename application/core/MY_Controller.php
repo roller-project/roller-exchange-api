@@ -12,13 +12,13 @@ class API_Controller extends REST_Controller{
 		$this->load->model(['author_model' => "author","apikey_model" => "apikey"]);
 	}
 
-	public function socketio($text){
+	public function socketio($text, $type = "notification"){
 		
 		$client = new ElephantIO\Client(new ElephantIO\Engine\SocketIO\Version1X('//127.0.0.1:3000'));
 
 		$client->initialize();
 		// send message to connected clients
-		$client->emit('broadcast', ['type' => 'notification', 'text' => $text]);
+		$client->emit('broadcast', ['type' => $type, 'text' => $text]);
 		$client->close();
 	}
 
