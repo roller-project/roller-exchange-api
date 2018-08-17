@@ -33,4 +33,55 @@ class Marketapi extends API_Public {
 		
 		$this->view($data);
 	}
+
+	public function trade_get(){
+		$trade = $this->input->get("trade");
+		list($symbol,$base) = explode('/', $trade);
+		if(!$symbol || !$base) {
+			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
+			return;
+		}
+
+		$arv = [
+			"sell" => $this->book_sell($symbol, $base),
+			"buy" => $this->book_sell($symbol, $base),
+			"history" => $this->book_history($symbol, $base),
+		];
+		$this->view($arv);
+	}
+
+	private function book_sell($symbol, $base){
+		
+
+		$this->db->select("*, sum(amount) as amount");
+		$this->db->where("symbol",$symbol);
+		$this->db->where("base",$base);
+		$this->db->group_by("prices");
+		$this->db->order_by("prices","DESC");
+		$this->db->limit(20,0);
+		return $this->db->get("trade_sell")->result();
+		
+	}
+
+	private function book_buy($symbol, $base){
+		
+		$this->db->select("*, sum(amount) as amount");
+		$this->db->where("symbol",$symbol);
+		$this->db->where("base",$base);
+		$this->db->group_by("prices");
+
+		$this->db->order_by("prices","ASC");
+		$this->db->limit(20,0);
+		return $this->db->get("trade_buy")->result();
+		
+	}
+
+	
+	private function book_history($symbol, $base){
+		$this->db->where("symbol",$symbol);
+		$this->db->where("base",$base);
+		$this->db->order_by("trade_id","DESC");
+		$this->db->limit(20,0);
+		return $this->db->get("trade_history")->result();
+	}
 }
