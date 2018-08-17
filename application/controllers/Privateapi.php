@@ -75,7 +75,7 @@ class Privateapi extends API_Private {
 	Write History Trade
 	*/
 
-	private function write_trade_history($amount, $prices, $target){
+	private function write_trade_history($base, $symbol, $amount, $prices, $target){
 		$arv = [
 			"trade_type" => $target,
 			"base" => $base,
