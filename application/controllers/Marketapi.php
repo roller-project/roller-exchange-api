@@ -56,11 +56,11 @@ class Marketapi extends API_Public {
 		$data = $this->db->query('SELECT *, SUM(amount) as volume, SUM(total) as volumebtc from trade_history, (SELECT MIN(prices) AS low, MAX(prices) AS high FROM trade_history) AS m WHERE created > DATE_SUB(NOW(), INTERVAL 24 HOUR) order by trade_id DESC')->row();
 		
 		return [
-			"change" => ($data->high/$data->low)*100,
+			"change" => ($data->high/$data->low)."%",
 			"high" => $data->high,
 			"low" => $data->low,
 			"volume" => $data->volume,
-			"volumebtc" => $data->volumebtc,
+			"volumebtc" => number_format($data->volumebtc,8),
 			"lastprice" => $data->prices
 		];
 	}
