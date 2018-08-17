@@ -46,7 +46,7 @@ class Marketapi extends API_Public {
 			"sell" => $this->book_sell($symbol, $base),
 			"buy" => $this->book_buy($symbol, $base),
 			"history" => $this->book_history($symbol, $base),
-			"sumany" => $this->sumary($symbol, $base)
+			"sumary" => $this->sumary($symbol, $base)
 		];
 
 		$this->view($arv);
