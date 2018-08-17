@@ -30,7 +30,7 @@ class Privateapi extends API_Private {
 		$amount = $this->input->post("amount");
 		$prices = $this->input->post("prices");
 
-
+		$this->socketio("New Buy");
 		$execute = $this->execute_buy($base, $symbol, $amount, $prices);
 		if($execute){
 			$arv = [
@@ -46,7 +46,7 @@ class Privateapi extends API_Private {
 		}else{
 			$this->view([]);
 		}
-		$this->socketio("New Buy");
+		
 	}
 
 	/*
@@ -109,8 +109,9 @@ class Privateapi extends API_Private {
 			"hash"		=>	sha1($amount.$prices)
 		];
 		$this->db->insert("trade_sell", $arv);
-		$this->view($arv);
 		$this->socketio("New Sell");
+		$this->view($arv);
+		
 	}
 
 
