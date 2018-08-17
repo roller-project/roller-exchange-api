@@ -46,9 +46,23 @@ class Marketapi extends API_Public {
 			"sell" => $this->book_sell($symbol, $base),
 			"buy" => $this->book_buy($symbol, $base),
 			"history" => $this->book_history($symbol, $base),
+			"sumany" => $this->sumary($symbol, $base)
 		];
-		
+
 		$this->view($arv);
+	}
+
+	private function sumary($symbol, $base){
+		$data = $this->db->query('SELECT *, SUM(amount) as volume, SUM(total) as volumebtc from trade_history, (SELECT MIN(prices) AS low, MAX(prices) AS high FROM trade_history) AS m WHERE created > DATE_SUB(NOW(), INTERVAL 24 HOUR) order by trade_id DESC')->row();
+		
+		return [
+			"change" => ($data->high/$data->low)*100,
+			"high" => $data->high,
+			"low" => $data->low,
+			"volume" => $data->volume,
+			"volumebtc" => $data->volumebtc,
+			"lastprice" => $data->prices
+		];
 	}
 
 	private function book_sell($symbol, $base){

@@ -19,6 +19,18 @@ class Privateapi extends API_Private {
 		$this->view($this->author->mywallet());
 	}
 
+	public function task_post(){
+		$buy = $this->db->get_where("trade_buy",["users_id" => 1])->result();
+		$sell = $this->db->get_where("trade_sell",["users_id" => 1])->result();
+		$arv = [
+			"buy" => $buy,
+			"sell" => $sell,
+		];
+		$this->view($arv);
+	}
+	/*
+	Buy Post
+	*/
 	public function buy_post(){
 		$trade = $this->input->post("trade");
 		list($symbol,$base) = explode('/', $trade);
