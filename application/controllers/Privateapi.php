@@ -78,7 +78,7 @@ class Privateapi extends API_Private {
 
 	private function execute_buy($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
-		$data = $this->db->query("select * from trade_sell where prices =< `".$prices."`")->result();
+		$data = $this->db->query("select * from trade_sell where prices <= `".$prices."`")->result();
 
 		$ex_amount = 0;
 		foreach ($data as $key => $value) {
