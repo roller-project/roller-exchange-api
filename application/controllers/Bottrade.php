@@ -11,17 +11,27 @@ class Bottrade extends Robottrade {
 			
 			for ($i = 0; $i < 20; ++$i)
 			{
-			    $arv[] = (float)$lastprices->prices + (0.00000001 * $i);
-			    $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
+			    $arv[] = (float)$lastprices->prices + 0.00002 + (0.00000001 * $i);
+			   // $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
 			}
 
-			$key = array_rand($arv,1);
-			$this->curl("buy",["trade" => "ROL/ROL","prices" => $arv[$key],"amount" => mt_rand(1,380)]);
-			echo "Buy ".$arv[$key];
-			$key = array_rand($arv,1);
-			$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,380)]);
-			echo "Sell ".$arv[$key];
-			sleep(5);
+			
+			$rand = mt_rand(1,10);
+			for ($i=0; $i <$rand ; $i++) { 
+				$key = array_rand($arv,1);
+				$this->curl("buy",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,10)]);
+				echo "Buy ".$arv[$key];
+				sleep(0.5);
+			}
+
+			$rand = mt_rand(1,10);
+			for ($i=0; $i <$rand ; $i++) { 
+				$key = array_rand($arv,1);
+				$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,50)]);
+				echo "Sell ".$arv[$key];
+				sleep(0.5);
+			}
+			
 		}
 		//print_r();
 	}

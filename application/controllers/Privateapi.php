@@ -55,6 +55,16 @@ class Privateapi extends API_Private {
 
 		$this->socketio("New Buy");
 		$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
+		$arv = [
+				"base" => $base,
+				"symbol" => $symbol,
+				"amount" => $amount,
+				"prices" => $prices,
+				"users_id" => "1",
+				"hash"		=>	sha1($amount.$prices)
+			];
+			$this->db->insert("trade_buy", $arv);
+			$this->view($arv);
 		/*
 		$execute = $this->execute_buy($base, $symbol, $amount, $prices);
 		if($execute){
