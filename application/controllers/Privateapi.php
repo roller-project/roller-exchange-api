@@ -19,6 +19,17 @@ class Privateapi extends API_Private {
 		$this->view($this->author->mywallet());
 	}
 
+	public function cancel_post(){
+		$id = $this->input->post("id");
+		$type = $this->input->post("type");
+		if($type == "sell"){
+			$this->db->delete("trade_sell",["trade_id" => $id]);
+		}
+		if($type == "buy"){
+			$this->db->delete("trade_buy",["trade_id" => $id]);
+		}
+		$this->socketio("reload");
+	}
 	public function task_post(){
 		$buy = $this->db->get_where("trade_buy",["users_id" => 1])->result();
 		$sell = $this->db->get_where("trade_sell",["users_id" => 1])->result();
@@ -66,8 +77,8 @@ class Privateapi extends API_Private {
 	*/
 
 	private function execute_buy($base, $symbol, $amount, $prices){
-		$this->db->where('prices =< '.$prices);
-		$data = $this->db->get("trade_sell")->result();
+		//$this->db->select('* prices =< '.$prices);
+		$data = $this->db->query("select * from trade_sell where prices =< `".$prices."`")->result();
 
 		$ex_amount = 0;
 		foreach ($data as $key => $value) {

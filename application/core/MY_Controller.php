@@ -51,6 +51,23 @@ class ServerController extends CI_Controller{
 	}
 }
 
+class Robottrade extends CI_Controller{
+	function __construct($file="rest")
+	{
+		parent::__construct($file);
+		$this->load->library(['session','email','user_agent']);
+		$this->load->model(['author_model' => "author","apikey_model" => "apikey"]);
+	}
+	public function socketio($text, $type = "notification"){
+		
+		$client = new ElephantIO\Client(new ElephantIO\Engine\SocketIO\Version1X('//127.0.0.1:3000'));
+
+		$client->initialize();
+		// send message to connected clients
+		$client->emit('broadcast', ['type' => $type, 'text' => $text]);
+		$client->close();
+	}
+}
 
 class Admin extends CI_Controller{
 	public $layout = "home-layout";
