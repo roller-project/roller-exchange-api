@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 require APPPATH . 'libraries/REST_Controller.php';
 require APPPATH . 'libraries/Format.php';
+
 class API_Controller extends REST_Controller{
 	public $layout = "";
 	function __construct($file="rest")
@@ -9,6 +10,16 @@ class API_Controller extends REST_Controller{
 		parent::__construct($file);
 		$this->load->library(['session','email','user_agent']);
 		$this->load->model(['author_model' => "author","apikey_model" => "apikey"]);
+	}
+
+	public function socketio($text){
+		
+		$client = new ElephantIO\Client(new ElephantIO\Engine\SocketIO\Version1X('//127.0.0.1:3000'));
+
+		$client->initialize();
+		// send message to connected clients
+		$client->emit('broadcast', ['type' => 'notification', 'text' => $text]);
+		$client->close();
 	}
 
 	public function view($arv){

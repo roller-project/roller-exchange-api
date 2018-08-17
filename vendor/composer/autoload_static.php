@@ -40,7 +40,6 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
-            'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\EventDispatcher\\' => 34,
         ),
@@ -55,10 +54,10 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'React\\Cache\\' => 12,
             'Ratchet\\RFC6455\\' => 16,
             'Ratchet\\Client\\' => 15,
-            'Ratchet\\' => 8,
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'PHPSocketIO\\' => 12,
         ),
@@ -72,14 +71,14 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
+        'E' => 
+        array (
+            'ElephantIO\\' => 11,
+        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
-        ),
-        'B' => 
-        array (
-            'Blockchain\\' => 11,
         ),
     );
 
@@ -121,10 +120,6 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
-        ),
-        'Symfony\\Component\\Routing\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/routing',
         ),
         'Symfony\\Component\\HttpFoundation\\' => 
         array (
@@ -170,9 +165,9 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         array (
             0 => __DIR__ . '/..' . '/ratchet/pawl/src',
         ),
-        'Ratchet\\' => 
+        'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/cboden/ratchet/src/Ratchet',
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -198,6 +193,11 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'ElephantIO\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wisembly/elephant.io/src',
+            1 => __DIR__ . '/..' . '/wisembly/elephant.io/test',
+        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
@@ -205,10 +205,6 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
-        ),
-        'Blockchain\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/modules/Blockchain',
         ),
     );
 
@@ -218,13 +214,6 @@ class ComposerStaticInit471a05123e402a37d56af85c2032e8e9
             'org\\bovigo\\vfs' => 
             array (
                 0 => __DIR__ . '/..' . '/mikey179/vfsStream/src/main/php',
-            ),
-        ),
-        'R' => 
-        array (
-            'React\\ZMQ' => 
-            array (
-                0 => __DIR__ . '/..' . '/react/zmq/src',
             ),
         ),
         'P' => 
