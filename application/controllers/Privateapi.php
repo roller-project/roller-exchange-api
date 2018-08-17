@@ -94,7 +94,8 @@ class Privateapi extends API_Private {
 			"symbol"	=> $symbol,
 			"amount" => $amount,
 			"prices" => $prices,
-			"hash" => sha1($base.$symbol.$amount.$prices)
+			"hash" => sha1($base.$symbol.$amount.$prices),
+			"total"	=> $prices * $amount
 		];
 		$this->db->insert("trade_history",$arv);
 	}
