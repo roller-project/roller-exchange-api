@@ -160,4 +160,17 @@ class Author_Model extends DB_Model{
     public function writeLog($content=""){
 
     }
+
+    public function mywallet(){
+        $arv = [];
+        $this->db->where("users_id", $this->getLoginID());
+        $arv["BTC"] = $this->db->get("wallet_btc")->row();
+       
+        $this->db->where("users_id", $this->getLoginID());
+        $data = $this->db->get("wallet_alt")->result();
+        foreach ($data as $key => $value) {
+            $arv[$value->alt_symbol] = $value;
+        }
+        return $arv;
+    }
 }
