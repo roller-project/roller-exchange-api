@@ -46,7 +46,7 @@ class Privateapi extends API_Private {
 		}else{
 			$this->view([]);
 		}
-
+		$this->socketio("Get Trade");
 	}
 
 	/*
