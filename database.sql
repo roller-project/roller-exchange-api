@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 18, 2018 at 09:26 AM
+-- Generation Time: Aug 18, 2018 at 11:11 AM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.8
 
@@ -864,7 +864,58 @@ CREATE TABLE `trade_history` (
 INSERT INTO `trade_history` (`trade_id`, `trade_type`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`, `total`) VALUES
 (1, '', 'BTC', 'ROL', 100.00, 0.000025, 1, '2018-08-16 22:06:58', '', 0),
 (2, '', 'BTC', 'ROL', 102.00, 0.000026, 4, '2018-08-16 22:07:15', '', 0),
-(3, '', 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-16 22:06:58', '', 0);
+(3, '', 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-16 22:06:58', '', 0),
+(4, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:53:01', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(5, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:54:52', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(6, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:54:53', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(7, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:55:22', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(8, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:55:22', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(9, 'buy', 'BTC', 'ROL', 30.00, 0.00004, 0, '2018-08-18 07:55:22', '77ddf5d9f7fa15f3663efafccd06483046c1d1ab', 0.0012),
+(10, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:56:04', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(11, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:56:04', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(12, 'buy', 'BTC', 'ROL', 30.00, 0.00004, 0, '2018-08-18 07:56:04', '77ddf5d9f7fa15f3663efafccd06483046c1d1ab', 0.0012),
+(13, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:56:19', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(14, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:56:19', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(15, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:56:20', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(16, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:56:20', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(17, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:58:13', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(18, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:58:13', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(19, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 07:59:47', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(20, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 07:59:47', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(21, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 08:00:23', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(22, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 08:00:23', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(23, 'buy', 'BTC', 'ROL', 100.00, 0.00004, 0, '2018-08-18 08:00:25', 'c09665de694089ad6db4b8bff8bfea64bbb23e6c', 0.004),
+(24, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 08:00:25', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408),
+(25, 'buy', 'BTC', 'ROL', 30.00, 0.00004, 0, '2018-08-18 08:01:47', '77ddf5d9f7fa15f3663efafccd06483046c1d1ab', 0.0012),
+(26, 'buy', 'BTC', 'ROL', 102.00, 0.00004, 0, '2018-08-18 08:01:47', 'e27969eda976d6435cdf8eb9bd933ea1d9f0a011', 0.00408);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `trade_invoice`
+--
+
+CREATE TABLE `trade_invoice` (
+  `trade_id` bigint(20) NOT NULL,
+  `users_id` int(10) NOT NULL,
+  `base` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `symbol` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `action_prices` float NOT NULL,
+  `target_prices` float NOT NULL,
+  `amount` float NOT NULL,
+  `total` float NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `trade_type` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `form_id` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `trade_invoice`
+--
+
+INSERT INTO `trade_invoice` (`trade_id`, `users_id`, `base`, `symbol`, `action_prices`, `target_prices`, `amount`, `total`, `created`, `trade_type`, `form_id`) VALUES
+(18, 1, 'BTC', 'ROL', 0.000025, 0.00004, 100, 0.004, '2018-08-18 08:52:33', 'buy', 1),
+(19, 1, 'BTC', 'ROL', 0.000025, 0.00004, 2, 0.0012, '2018-08-18 08:52:33', 'buy', 3);
 
 -- --------------------------------------------------------
 
@@ -888,9 +939,7 @@ CREATE TABLE `trade_sell` (
 --
 
 INSERT INTO `trade_sell` (`trade_id`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`) VALUES
-(1, 'BTC', 'ROL', 100.00, 0.000025, 1, '2018-08-16 22:06:58', ''),
-(2, 'BTC', 'ROL', 102.00, 0.000026, 4, '2018-08-16 22:07:15', ''),
-(3, 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-16 22:06:58', '');
+(2, 'BTC', 'ROL', 102.00, 0.000026, 4, '2018-08-16 22:07:15', '');
 
 -- --------------------------------------------------------
 
@@ -996,6 +1045,12 @@ ALTER TABLE `trade_history`
   ADD PRIMARY KEY (`trade_id`);
 
 --
+-- Indexes for table `trade_invoice`
+--
+ALTER TABLE `trade_invoice`
+  ADD PRIMARY KEY (`trade_id`);
+
+--
 -- Indexes for table `trade_sell`
 --
 ALTER TABLE `trade_sell`
@@ -1060,7 +1115,12 @@ ALTER TABLE `trade_buy`
 -- AUTO_INCREMENT for table `trade_history`
 --
 ALTER TABLE `trade_history`
-  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+--
+-- AUTO_INCREMENT for table `trade_invoice`
+--
+ALTER TABLE `trade_invoice`
+  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 --
 -- AUTO_INCREMENT for table `trade_sell`
 --
