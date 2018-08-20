@@ -157,7 +157,7 @@ class Marketapi extends API_Public {
         $current_time = time();
         $offset = ($current_time - ($timeslice * $limit)) -1;
 
-		$data = $this->db->query("select UNIX_TIMESTAMP(`created`) as openDaytime, 
+		$data = $this->db->query("select created as openDaytime, 
 				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created), ',', 1 ) AS `open`,
                 SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices DESC), ',', 1 ) AS `high`,
                 SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices), ',', 1 ) AS `low`,
@@ -165,6 +165,16 @@ class Marketapi extends API_Public {
                 SUM(total) AS volume,
                 ROUND((CEILING(UNIX_TIMESTAMP(`created`) / $timeslice) * $timeslice)) AS openTime
                  FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' AND UNIX_TIMESTAMP(`created`) > ($offset) GROUP BY openTime ORDER BY openTime DESC")->result();
-		$this->view($data);
+		$arv = [];
+		foreach ($data as $key => $value) {
+			$value->openTime = $value->openTime * 1000;
+			$value->open = number_format($value->open,8);
+			$value->low = number_format($value->low,8);
+			$value->high = number_format($value->high,8);
+			$value->close = number_format($value->close,8);
+			$arv = $value;
+
+		}
+		$this->view($arv);
 	}
 }
