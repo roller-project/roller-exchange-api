@@ -156,15 +156,29 @@ class Marketapi extends API_Public {
         }
         $current_time = time();
         $offset = ($current_time - ($timeslice * $limit)) -1;
-
+        /*
 		$data = $this->db->query("select  
 				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created ASC), ',', 1 ) AS `open`,
-                SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices DESC), ',', 1 ) AS `high`,
-                SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices ASC), ',', 1 ) AS `low`,
+                MAX(prices) AS `high`,
+                MIN(prices) AS `low`,
                 SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created DESC), ',', 1 ) AS `close`,
+               
                 SUM(total) AS volume,
                 ROUND((CEILING(UNIX_TIMESTAMP(`created`) / $timeslice) * $timeslice)) AS openTime
                  FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' AND UNIX_TIMESTAMP(`created`) > ($offset) GROUP BY openTime ORDER BY openTime DESC")->result();
+		*/
+        $data = $this->db->query("SELECT
+			  FLOOR(MIN(`created`)/"+$timeslice+")*"+$timeslice+" AS created,
+			  SUM(amount) AS volume,
+			  SUM(prices*amount)/sum(amount) AS wavg_price,
+			  SUBSTRING_INDEX(MIN(CONCAT(`created`, '_', prices)), '_', -1) AS `open`,
+			  MAX(prices) AS high,
+			  MIN(prices) AS low,
+			  SUBSTRING_INDEX(MAX(CONCAT(`created`, '_', prices)), '_', -1) AS `close`
+			FROM trade_history
+			GROUP BY FLOOR(`created`/"+$timeslice+")
+			ORDER BY created")->result();
+        $this->view($data);exit();
 		$arv = [];
 		foreach ($data as $key => $value) {
 			$value->openTime = $value->openTime * 1000;
