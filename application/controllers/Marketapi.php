@@ -157,7 +157,7 @@ class Marketapi extends API_Public {
         $current_time = time();
         $offset = ($current_time - ($timeslice * $limit)) -1;
 
-		$data = $this->db->query("select created as openDaytime, 
+		$data = $this->db->query("select UNIX_TIMESTAMP(`created`) as openDaytime, 
 				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created), ',', 1 ) AS `open`,
                 SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices DESC), ',', 1 ) AS `high`,
                 SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices), ',', 1 ) AS `low`,
