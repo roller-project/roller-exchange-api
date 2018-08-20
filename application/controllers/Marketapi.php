@@ -172,6 +172,7 @@ class Marketapi extends API_Public {
 			$value->low = number_format($value->low,8);
 			$value->high = number_format($value->high,8);
 			$value->close = number_format($value->close,8);
+			$value->volume = number_format($value->volume,8);
 			$arv[] = $value;
 
 		}
