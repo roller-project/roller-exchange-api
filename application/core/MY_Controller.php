@@ -26,6 +26,20 @@ class API_Controller extends REST_Controller{
 	public function view($arv){
 		$this->response($arv);
 	}
+
+	public function getError($text=[], $ruller=[]){
+		if(!is_array($text)){
+			if(!trim($text)){
+				$arv = ["error" => "Empty type", "error" => "data input"];
+				$this->view($arv);
+				exit();
+			}
+		}else{
+
+		}
+
+		return true;
+	}
 }
 
 /*

@@ -105,7 +105,57 @@ class Marketapi extends API_Public {
 	OLHC Data
 	*/
 
-	public function olhc_get(){
-		$prod = "5";
+	public function ohlc_get(){
+		$periodSize = $this->input->get("period");
+		$this->getError($periodSize);
+
+		$timeslice = 60;
+        switch($periodSize) {
+            case '1m':
+                $timescale = '1 minute';
+                $timeslice = 60;
+                break;
+            case '5m':
+                $timescale = '5 minutes';
+                $timeslice = 300;
+                break;
+            case '10m':
+                $timescale = '10 minutes';
+                $timeslice = 600;
+                break;
+            case '15m':
+                $timescale = '15 minutes';
+                $timeslice = 900;
+                break;
+            case '30m':
+                $timescale = '30 minutes';
+                $timeslice = 1800;
+                break;
+            case '1h':
+                $timescale = '1 hour';
+                $timeslice = 3600;
+                break;
+            case '4h':
+                $timescale = '4 hours';
+                $timeslice = 14400;
+                break;
+            case '1d':
+                $timescale = '1 day';
+                $timeslice = 86400;
+                break;
+            case '1w':
+                $timescale = '1 week';
+                $timeslice = 604800;
+                break;
+        }
+        $current_time = time();
+        $offset = ($current_time - ($timeslice * $limit)) -1;
+
+		$data = $this->db->query('select 
+				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created), ',', 1 ) AS `open`,
+                SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices DESC), ',', 1 ) AS `high`,
+                SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY prices), ',', 1 ) AS `low`,
+                SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created DESC), ',', 1 ) AS `close`')->result();
+		$this->view($data);
 	}
 }

@@ -234,10 +234,18 @@ class Privateapi extends API_Private {
 		
 	}
 
-	
+	/*
+	Call Your Task
+	*/
 	public function mytask_post(){
 		$arv = [];
 		$this->view($arv);
+	}
+
+
+	public function gender_wallet_post(){
+		$symbol = $this->input->post("symbol");
+		$this->error($symbol);
 	}
 
 }
