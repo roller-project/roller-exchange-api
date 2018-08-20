@@ -2,6 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Privateapi extends API_Private {
+
+	public function checklogin_post(){
+		$this->view(["status" => "login"]);
+	}
 	public function index_get(){
 		$arv = [
 			"msg" => "connect",
@@ -16,7 +20,7 @@ class Privateapi extends API_Private {
 	}
 
 	public function wallet_post(){
-		$this->view($this->author->mywallet());
+		$this->view($this->author_model->mywallet());
 	}
 
 	public function cancel_post(){
@@ -30,6 +34,8 @@ class Privateapi extends API_Private {
 		}
 		$this->socketio("reload");
 	}
+
+
 	public function task_post(){
 		$buy = $this->db->get_where("trade_buy",["users_id" => 1])->result();
 		$sell = $this->db->get_where("trade_sell",["users_id" => 1])->result();
@@ -60,7 +66,7 @@ class Privateapi extends API_Private {
 				"symbol" => $symbol,
 				"amount" => $amount,
 				"prices" => $prices,
-				"users_id" => "1",
+				"users_id" => $this->users_id,
 				"hash"		=>	sha1($amount.$prices)
 			];
 			$this->db->insert("trade_buy", $arv);
@@ -89,10 +95,7 @@ class Privateapi extends API_Private {
 	Execute Buy
 	*/
 
-	public function test_get(){
-		$data = $this->execute_buy('BTC','ROL','102','0.00004');
-		print_r($data);
-	}
+	
 	private function execute_buy($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
 		$data = $this->db->query("select * from trade_sell where prices <= ".$prices." order by prices asc")->result();
@@ -115,7 +118,7 @@ class Privateapi extends API_Private {
 
 	private function create_invoice($base, $symbol, $amount, $prices, $obj, $target){
 		$arv = [
-			"users_id" => 1,
+			"users_id" => $this->users_id,
 			"base" => $base,
 			"symbol" => $symbol,
 			"action_prices" => $obj->prices,
@@ -198,7 +201,8 @@ class Privateapi extends API_Private {
 			"amount" => $amount,
 			"prices" => $prices,
 			"hash" => sha1($base.$symbol.$amount.$prices),
-			"total"	=> $prices * $amount
+			"total"	=> $prices * $amount,
+			"users_id" => $this->users_id
 		];
 		$this->db->insert("trade_history",$arv);
 	}
@@ -221,7 +225,7 @@ class Privateapi extends API_Private {
 			"symbol" => $symbol,
 			"amount" => $amount,
 			"prices" => $prices,
-			"users_id" => "1",
+			"users_id" => $this->users_id,
 			"hash"		=>	sha1($amount.$prices)
 		];
 		$this->db->insert("trade_sell", $arv);
@@ -230,5 +234,10 @@ class Privateapi extends API_Private {
 		
 	}
 
+	
+	public function mytask_post(){
+		$arv = [];
+		$this->view($arv);
+	}
 
 }

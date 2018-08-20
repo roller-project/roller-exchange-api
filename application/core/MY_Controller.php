@@ -5,6 +5,7 @@ require APPPATH . 'libraries/Format.php';
 
 class API_Controller extends REST_Controller{
 	public $layout = "";
+	public $users_id = "";
 	function __construct($file="rest")
 	{
 		parent::__construct($file);
@@ -26,6 +27,10 @@ class API_Controller extends REST_Controller{
 		$this->response($arv);
 	}
 }
+
+/*
+Public API
+*/
 class API_Public extends API_Controller{
 	function __construct()
 	{
@@ -35,11 +40,34 @@ class API_Public extends API_Controller{
 	
 }
 
+
+/*
+Private API
+*/
+
 class API_Private extends API_Controller{
+	
 	function __construct()
 	{
 		parent::__construct("private_api");
+		//$this->config->set_item("auth_source","library");
+		//$this->config->set_item("auth_model_class") = 'author_model';
 		
+		//if(!$this->is_login()){
+		//	$this->view(["error" => "Login Session"]);
+		//	exit();
+		//}
+		$this->users_id = $this->author_model->users_id;
+
+		
+	}
+	private function is_login(){
+		$data = $this->db->get_where("account_login",["users_id" => $this->input->post("users_id"), "session_id" => $this->input->post("session_id")])->row();
+		if(isset($data->cache_id)){
+			$this->users_id = $data->users_id;
+			return true;
+		}
+		return false;
 	}
 }
 

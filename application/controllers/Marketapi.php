@@ -99,4 +99,13 @@ class Marketapi extends API_Public {
 		$this->db->limit(20,0);
 		return $this->db->get("trade_history")->result();
 	}
+
+
+	/*
+	OLHC Data
+	*/
+
+	public function olhc_get(){
+		$prod = "5";
+	}
 }

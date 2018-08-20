@@ -35,20 +35,48 @@ class Author_Model extends DB_Model{
     	$this->db->where("email", $email);
     	$this->db->where("password", $this->makePassword($password));
     	$data = $this->db->get("account")->row();
-
+        
     	if($data){
     		if($data->status == 0){
 	    		return ["error" => "Account Locker"];
 	    	}
     		if(password_verify($password, $data->hash)){
+                $this->db->delete("account_login",["users_id" => $data->id]);
+                $this->db->insert("account_login",["users_id" => $data->id, "session_id" => $this->getSessionID()]);
     			return [
     				"id" => $data->id,
-    				"login" => "ok"
+    				"login" => "ok",
+                    "session_id" => $this->getSessionID()
     			];
     		}
     		
     	}
     	return ["error" => "Email or password is corect"];
+    }
+
+
+    public function _checklogin($username, $password){
+        //print_r($username);
+        
+        $data = $this->db->get_where("account_login",["users_id" => $username, "session_id" => $password])->row();
+        if(isset($data->cache_id)){
+
+            $this->users_id = $data->users_id;
+            return true;
+        }
+        return false;
+    }
+    private function getSessionID(){
+        
+        $arv = explode('&', $_SERVER["HTTP_COOKIE"]);
+        foreach ($arv as $key => $value) {
+            $a = explode('=', $value);
+            if($a[0] == "ci_session"){
+                $arvs = $a[1];
+            }
+        }
+        return $arvs;
+    
     }
 
     public function validate_email($email){
@@ -163,14 +191,31 @@ class Author_Model extends DB_Model{
 
     public function mywallet(){
         $arv = [];
+        $btcservices = $this->db->get_where("symbol_service",["symbol_name" => 'BTC'])->row();
+
         $this->db->where("users_id", $this->getLoginID());
         $arv["BTC"] = $this->db->get("wallet_btc")->row();
-       
+        $arv["BTC"]->server = $this->checkServerOnline($btcservices->rpc_server, $btcservices->rpc_port);
+
         $this->db->where("users_id", $this->getLoginID());
+        $this->db->join("symbol_service","symbol_service.symbol_name=wallet_alt.alt_symbol",'left');
         $data = $this->db->get("wallet_alt")->result();
         foreach ($data as $key => $value) {
             $arv[$value->alt_symbol] = $value;
+            $arv[$value->alt_symbol]->server = $this->checkServerOnline($value->rpc_server, $value->rpc_port);
         }
         return $arv;
     }
+
+     private function checkServerOnline($host, $port){
+       
+        $waitTimeoutInSeconds = 0.5; 
+        if($fp = @fsockopen($host,$port,$errCode,$errStr,$waitTimeoutInSeconds)){   
+            return true;
+        } else {
+           return false;
+        } 
+        fclose($fp);
+    }
+
 }

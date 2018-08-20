@@ -19,14 +19,15 @@ class DB_Model extends CI_Model
 	public $limit_connect = false;
 	public $limit = 20;
 	public $start = 0;
-	public $user_id = 1;
+	public $users_id = 0;
 	function __construct()
 	{
 		parent::__construct();
+
 	}
 
 	public function getLoginID(){
-		return $this->user_id;
+		return $this->users_id;
 	}
 	public function is_admin(){
 		$is_admin = true;
@@ -35,4 +36,14 @@ class DB_Model extends CI_Model
 		}
 		exit();
 	}
+
+
+	public function is_coin_master(){
+		$is_admin = true;
+		if($is_admin){
+			return true;
+		}
+		exit();
+	}
+
 }

@@ -40,4 +40,6 @@ class Publicapi extends API_Public {
 		$text = $this->input->post("text");
 		$this->socketio($text,"chat");
 	}
+
+	
 }

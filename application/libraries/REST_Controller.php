@@ -575,6 +575,7 @@ abstract class REST_Controller extends CI_Controller {
                 ($this->config->item('allow_auth_and_keys') === TRUE && $this->_allow === TRUE)))
         {
             $rest_auth = strtolower($this->config->item('rest_auth'));
+
             switch ($rest_auth)
             {
                 case 'basic':
@@ -1922,11 +1923,14 @@ abstract class REST_Controller extends CI_Controller {
      */
     protected function _perform_library_auth($username = '', $password = NULL)
     {
+
         if (empty($username))
         {
             log_message('error', 'Library Auth: Failure, empty username');
             return FALSE;
         }
+       
+
 
         $auth_library_class = strtolower($this->config->item('auth_library_class'));
         $auth_library_function = strtolower($this->config->item('auth_library_function'));
@@ -1945,7 +1949,7 @@ abstract class REST_Controller extends CI_Controller {
 
         if (is_callable([$auth_library_class, $auth_library_function]) === FALSE)
         {
-            $this->load->library($auth_library_class);
+            $this->load->model($auth_library_class);
         }
 
         return $this->{$auth_library_class}->$auth_library_function($username, $password);
@@ -1961,10 +1965,12 @@ abstract class REST_Controller extends CI_Controller {
      */
     protected function _check_login($username = NULL, $password = FALSE)
     {
+
         if (empty($username))
         {
             return FALSE;
         }
+
 
         $auth_source = strtolower($this->config->item('auth_source'));
         $rest_auth = strtolower($this->config->item('rest_auth'));
