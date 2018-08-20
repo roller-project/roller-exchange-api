@@ -245,7 +245,7 @@ class Privateapi extends API_Private {
 
 	public function gender_wallet_post(){
 		$symbol = $this->input->post("symbol");
-		$this->error($symbol);
+		$this->getError($symbol);
 	}
 
 }
