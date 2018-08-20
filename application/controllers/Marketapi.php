@@ -258,12 +258,12 @@ class Marketapi extends API_Public {
 		$offset = floor($offsetTime/$period) * $period;
 
 		for ($i=0; $i < $limit; $i++) { 
-			$end = $offset + ($period * $i);
+			$end = $offset + ($period * ($limit- $i));
 			
 				$obj = new stdClass();
-				$obj->now = date('Y-m-d h:i:s',time());
+				$obj->now = date('Y-m-d h:i:s',$end);
 				
-				$obj->start = date('Y-m-d h:i:s',$offset + (($period * $i) - ($period + 1)));
+				$obj->start = date('Y-m-d h:i:s',$end - $period);
 				$obj->end = date('Y-m-d h:i:s',$end);
 
 				$obj->track = $end;
@@ -277,6 +277,6 @@ class Marketapi extends API_Public {
 				$arv[$end] = $obj;
 			
 		}
-		return $this->array_sort($arv,'openTime','SORT_DESC');
+		return $arv;
 	}
 }
