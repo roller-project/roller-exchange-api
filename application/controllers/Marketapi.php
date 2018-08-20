@@ -202,6 +202,7 @@ class Marketapi extends API_Public {
 				$volume = $a->volume;
 				
 			}
+			$value->openTime = $value->openTime * 1000;
 			$value->open = number_format($open,8);
 			$value->low = number_format($low,8);
 			$value->high = number_format($high,8);
