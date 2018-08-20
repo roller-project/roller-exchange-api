@@ -180,7 +180,7 @@ class Marketapi extends API_Public {
 
 		}
 		
-		
+		rsort($arv);
 		$this->view($arv);
 	}
 
@@ -205,8 +205,9 @@ class Marketapi extends API_Public {
 				
 			}else{
 				$open = $close;
-				$low = $close;
-				$high = $close;
+				$low = 0;
+				$high = 0;
+				$volume = 0;
 			}
 				
 				
@@ -218,7 +219,7 @@ class Marketapi extends API_Public {
 			$value->close = number_format($close,8);
 			$value->volume = number_format($volume,8);
 
-			$arv[] = $value;
+			$arv[$value->track] = $value;
 		}
 		return $arv;
 	}
@@ -267,7 +268,7 @@ class Marketapi extends API_Public {
 		$offset = floor($offsetTime/$period) * $period;
 
 		for ($i=0; $i < $limit; $i++) { 
-			$end = $offset + ($period * ($limit- $i));
+			$end = $offset + ($period * $i);
 			
 				$obj = new stdClass();
 				$obj->now = date('Y-m-d h:i:s',$end);
