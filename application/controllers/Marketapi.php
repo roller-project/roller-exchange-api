@@ -156,7 +156,7 @@ class Marketapi extends API_Public {
         }
         $current_time = time();
         $offset = ($current_time - ($timeslice * $limit)) -1;
-        
+        /*
 		$data = $this->db->query("select  
 				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created ASC), ',', 1 ) AS `open`,
                 MAX(prices) AS `high`,
@@ -166,31 +166,80 @@ class Marketapi extends API_Public {
                 SUM(total) AS volume,
                 ROUND((CEILING(UNIX_TIMESTAMP(`created`) / $timeslice) * $timeslice)) AS openTime
                  FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' GROUP BY openTime ORDER BY openTime DESC")->result();
-		/*
-        $data = $this->db->query("SELECT
-			  FLOOR(MIN(`created`)/"+$timeslice+")*"+$timeslice+" AS created,
-			  SUM(amount) AS volume,
-			  SUM(prices*amount)/sum(amount) AS wavg_price,
-			  SUBSTRING_INDEX(MIN(CONCAT(`created`, '_', prices)), '_', -1) AS `open`,
-			  MAX(prices) AS high,
-			  MIN(prices) AS low,
-			  SUBSTRING_INDEX(MAX(CONCAT(`created`, '_', prices)), '_', -1) AS `close`
-			FROM trade_history
-			GROUP BY FLOOR(`created`/"+$timeslice+")
-			ORDER BY created")->result();
-        $this->view($data);exit();
-        */
+		*/
+        
+        $data = $this->db->query("select FLOOR(MIN(UNIX_TIMESTAMP(`created`))/$timeslice)*$timeslice AS created, SUM(amount) AS volume, SUBSTRING_INDEX(MIN(CONCAT(`created`, '_', prices)), '_', -1) AS `open`, MAX(prices) AS `high`, MIN(prices) AS `low`, SUBSTRING_INDEX(MAX(CONCAT(`created`, '_', prices)), '_', -1) AS `close` FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' GROUP BY FLOOR(UNIX_TIMESTAMP(`created`)/$timeslice) ORDER BY created")->result();
+        //$this->view($data);exit();
 		$arv = [];
+		$createPeriod = $this->renderChart($offset, $timeslice, $limit);
+		
 		foreach ($data as $key => $value) {
-			$value->openTime = $value->openTime * 1000;
-			$value->open = number_format($value->open,8);
-			$value->low = number_format($value->low,8);
-			$value->high = number_format($value->high,8);
-			$value->close = number_format($value->close,8);
-			$value->volume = number_format($value->volume,8);
-			$arv[] = $value;
+			
+			$arv = $this->magre_period($value,$createPeriod,$value->created);
+			//$arv = date('Y-m-d h:i:s',$value->created);
 
 		}
+		
+		
 		$this->view($arv);
+	}
+
+	private function magre_period($a, $b, $time){
+		$arv = [];
+		$open = 0;
+		$low = 0;
+		$high = 0;
+		$close = 0;
+		$volume = 0;
+
+		foreach ($b as $key => $value) {
+			if($value->openTime == $time){
+				
+				$open = $a->open;
+				$low = $a->low;
+				$high = $a->high;
+				$close = $a->close;
+				$volume = $a->volume;
+				
+			}
+			$value->open = number_format($open,8);
+			$value->low = number_format($low,8);
+			$value->high = number_format($high,8);
+			$value->close = number_format($close,8);
+			$value->volume = number_format($volume,8);
+
+			$arv[] = $value;
+		}
+		return $arv;
+	}
+
+	private function renderChart($offsetTime, $period, $limit){
+		$arv = [];
+		
+		$track = ceil($offsetTime/$period);
+		$end = floor($offsetTime/$period);
+		$offset = floor($offsetTime/$period) * $period;
+
+		for ($i=0; $i < $limit; $i++) { 
+			$end = $offset + ($period * $i);
+			
+				$obj = new stdClass();
+				$obj->now = date('Y-m-d h:i:s',time());
+				
+				$obj->start = date('Y-m-d h:i:s',$offset + (($period * $i) - ($period + 1)));
+				$obj->end = date('Y-m-d h:i:s',$end);
+
+				$obj->period = $period;
+				$obj->openTime = $end;
+				$obj->open = 0;
+				$obj->low = 0;
+				$obj->high = 0;
+				$obj->close = 0;
+				$obj->volume = 0;
+
+				$arv[$end] = $obj;
+			
+		}
+		return $arv;
 	}
 }
