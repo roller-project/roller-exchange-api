@@ -193,7 +193,7 @@ class Marketapi extends API_Public {
 		$volume = 0;
 
 		foreach ($b as $key => $value) {
-			if($value->openTime == $time){
+			if($value->track == $time){
 				
 				$open = $a->open;
 				$low = $a->low;
@@ -202,7 +202,7 @@ class Marketapi extends API_Public {
 				$volume = $a->volume;
 				
 			}
-			$value->openTime = $value->openTime * 1000;
+			//$value->openTime = $value->openTime;
 			$value->open = number_format($open,8);
 			$value->low = number_format($low,8);
 			$value->high = number_format($high,8);
@@ -230,8 +230,8 @@ class Marketapi extends API_Public {
 				$obj->start = date('Y-m-d h:i:s',$offset + (($period * $i) - ($period + 1)));
 				$obj->end = date('Y-m-d h:i:s',$end);
 
-				$obj->period = $period;
-				$obj->openTime = $end;
+				$obj->track = $end;
+				$obj->openTime = $end * 1000;
 				$obj->open = 0;
 				$obj->low = 0;
 				$obj->high = 0;
