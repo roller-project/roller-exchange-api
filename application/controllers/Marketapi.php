@@ -277,6 +277,6 @@ class Marketapi extends API_Public {
 				$arv[$end] = $obj;
 			
 		}
-		return $this->array_sort($arv,'openTime','SORT_ASC');
+		return $this->array_sort($arv,'openTime','SORT_DESC');
 	}
 }
