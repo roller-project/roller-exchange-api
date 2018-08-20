@@ -193,10 +193,8 @@ class Marketapi extends API_Public {
 		$volume = 0;
 
 		foreach ($b as $key => $value) {
-			$open = $close;
-			$low = $close;
-			$high = $close;
 			
+
 			if($value->track == $time){
 				
 				$open = $a->open;
@@ -205,6 +203,10 @@ class Marketapi extends API_Public {
 				$close = $a->close;
 				$volume = $a->volume;
 				
+			}else{
+				$open = $close;
+				$low = $close;
+				$high = $close;
 			}
 				
 				
