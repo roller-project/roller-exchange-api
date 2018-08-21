@@ -219,7 +219,7 @@ class Marketapi extends API_Public {
 			$value->close = number_format($close,8);
 			$value->volume = number_format($volume,8);
 
-			$arv[$value->track] = $value;
+			$arv[] = $value;
 		}
 		return $arv;
 	}
