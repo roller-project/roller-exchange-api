@@ -180,7 +180,7 @@ class Marketapi extends API_Public {
 
 		}
 		
-		//rsort($arv);
+		rsort($arv);
 		$this->view($arv);
 	}
 
