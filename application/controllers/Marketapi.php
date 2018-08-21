@@ -177,8 +177,8 @@ class Marketapi extends API_Public {
 		foreach ($data as $key => $value) {
 			
 			$value->open = $lastclose;
-			$value->low = ($value->low < $value->open ? $value->low : 0);
-			$value->high = ($value->high > $value->open ? $value->high : 0);
+			$value->low = ($value->low < $value->close ? $value->low : 0);
+			$value->high = ($value->high > $value->close ? $value->high : 0);
 			$arv[] = $value;
 			$lastclose = $value->close;
 
