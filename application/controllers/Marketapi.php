@@ -213,7 +213,7 @@ class Marketapi extends API_Public {
 				
 			
 			//$value->openTime = $value->openTime;
-			$value->date = date('Y-m-d h:i:s',$value->openTime/1000);
+			$value->date = date('Y-m-d\TH:i:s.z\Z',$value->openTime/1000);
 			$value->open = number_format($open,8);
 			$value->low = number_format($low,8);
 			$value->high = number_format($high,8);
