@@ -11,7 +11,7 @@ class Bottrade extends Robottrade {
 			
 			for ($i = 0; $i < 20; ++$i)
 			{
-			    $arv[] = (float)$lastprices->prices + 0.00002 + (0.00000001 * $i);
+			    $arv[] = (float)$lastprices->prices + 0.00002 + (0.000001 * $i);
 			   // $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
 			}
 
