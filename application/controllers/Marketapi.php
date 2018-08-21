@@ -213,6 +213,7 @@ class Marketapi extends API_Public {
 				
 			
 			//$value->openTime = $value->openTime;
+			$value->date = date('Y-m-d h:i:s',$value->openTime/1000);
 			$value->open = number_format($open,8);
 			$value->low = number_format($low,8);
 			$value->high = number_format($high,8);
@@ -225,40 +226,7 @@ class Marketapi extends API_Public {
 	}
 
 
-	private function array_sort($array, $on, $order=SORT_ASC)
-	{
-	    $new_array = array();
-	    $sortable_array = array();
-
-	    if (count($array) > 0) {
-	        foreach ($array as $k => $v) {
-	            if (is_array($v)) {
-	                foreach ($v as $k2 => $v2) {
-	                    if ($k2 == $on) {
-	                        $sortable_array[$k] = $v2;
-	                    }
-	                }
-	            } else {
-	                $sortable_array[$k] = $v;
-	            }
-	        }
-
-	        switch ($order) {
-	            case SORT_ASC:
-	                asort($sortable_array);
-	            break;
-	            case SORT_DESC:
-	                arsort($sortable_array);
-	            break;
-	        }
-
-	        foreach ($sortable_array as $k => $v) {
-	            $new_array[$k] = $array[$k];
-	        }
-	    }
-
-	    return $new_array;
-	}
+	
 
 	private function renderChart($offsetTime, $period, $limit){
 		$arv = [];
@@ -284,7 +252,7 @@ class Marketapi extends API_Public {
 				$obj->close = 0;
 				$obj->volume = 0;
 
-				$arv[$end] = $obj;
+				$arv[] = $obj;
 			
 		}
 		return $arv;
