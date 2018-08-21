@@ -114,7 +114,7 @@ class Marketapi extends API_Public {
 		$base = $this->input->get("base");
 		$this->getError($base);
 
-		$limit = (is_numeric($limit) && $limit > 100 ? $limit : 240);
+		$limit = (is_numeric($limit) && $limit > 10 ? $limit : 240);
 		$timeslice = 60;
         switch($periodSize) {
             case '1m':
