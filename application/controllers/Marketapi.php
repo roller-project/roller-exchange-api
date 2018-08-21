@@ -170,22 +170,10 @@ class Marketapi extends API_Public {
         
         $data = $this->db->query("select FLOOR(MIN(UNIX_TIMESTAMP(`created`))/$timeslice)*$timeslice AS created, SUM(amount) AS volume, SUBSTRING_INDEX(MIN(CONCAT(`created`, '_', prices)), '_', -1) AS `open`, MAX(prices) AS `high`, MIN(prices) AS `low`, SUBSTRING_INDEX(MAX(CONCAT(`created`, '_', prices)), '_', -1) AS `close` FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' GROUP BY FLOOR(UNIX_TIMESTAMP(`created`)/$timeslice) ORDER BY created")->result();
         //$this->view($data);exit();
-		$arv = [];
-		$createPeriod = $this->renderChart($offset, $timeslice, $limit);
 		
-		$lastclose = 0;
-		foreach ($data as $key => $value) {
-			
-			$value->open = $lastclose;
-			$value->low = ($value->low < $value->close ? $value->low : 0);
-			$value->high = ($value->high > $value->close ? $value->high : 0);
-			$arv[] = $value;
-			$lastclose = $value->close;
-
-		}
 		
 		//rsort($arv);
-		$this->view($arv);
+		$this->view($data);
 	}
 
 	private function magre_period($a, $b, $time){
