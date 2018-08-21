@@ -155,7 +155,7 @@ class Marketapi extends API_Public {
                 break;
         }
         $current_time = time();
-        $offset = ($current_time - ($timeslice * $limit));
+        $offset = ($current_time - ($timeslice * $limit) -1);
         /*
 		$data = $this->db->query("select  
 				SUBSTRING_INDEX(GROUP_CONCAT(CAST(prices AS CHAR) ORDER BY created ASC), ',', 1 ) AS `open`,
