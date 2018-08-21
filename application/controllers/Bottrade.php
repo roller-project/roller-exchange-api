@@ -21,7 +21,7 @@ class Bottrade extends Robottrade {
 				$key = array_rand($arv,1);
 				$this->curl("buy",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,10)]);
 				echo "Buy ".$arv[$key];
-				sleep(0.5);
+				sleep(30);
 			}
 
 			$rand = mt_rand(1,10);
@@ -29,7 +29,7 @@ class Bottrade extends Robottrade {
 				$key = array_rand($arv,1);
 				$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,50)]);
 				echo "Sell ".$arv[$key];
-				sleep(0.5);
+				sleep(30);
 			}
 			
 		}
