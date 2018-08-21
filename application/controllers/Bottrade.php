@@ -82,12 +82,15 @@ class Bottrade extends Robottrade {
 
 
 	public function curl($target, $fields=[]){
+		$fields = array_merge($fields,["is_bot" => "autotrade"]);
 		$fields_string = http_build_query($fields);
 
 		//open connection
 		$ch = curl_init();
 
 		//set the url, number of POST vars, POST data
+		curl_setopt($ch,CURLOPT_HTTPAUTH, constant('CURLAUTH_BASIC'));
+		curl_setopt($ch,CURLOPT_USERPWD, 'botrade:motconbot');
 		curl_setopt($ch,CURLOPT_URL, "https://api.btcrip.co/api/account/".$target);
 		curl_setopt($ch,CURLOPT_POST, 1);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
