@@ -173,15 +173,17 @@ class Marketapi extends API_Public {
 		$arv = [];
 		$createPeriod = $this->renderChart($offset, $timeslice, $limit);
 		
+		$lastclose = 0;
 		foreach ($data as $key => $value) {
 			
-			$arv = $this->magre_period($value,$createPeriod,$value->created);
-			//$arv = date('Y-m-d h:i:s',$value->created);
+			$value->open = $lastclose;
+			$arv[] = $value;
+			$lastclose = $value->close;
 
 		}
 		
-		rsort($arv);
-		$this->view($data);
+		//rsort($arv);
+		$this->view($arv);
 	}
 
 	private function magre_period($a, $b, $time){
