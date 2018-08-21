@@ -181,7 +181,7 @@ class Marketapi extends API_Public {
 		}
 		
 		rsort($arv);
-		$this->view($arv);
+		$this->view($data);
 	}
 
 	private function magre_period($a, $b, $time){
