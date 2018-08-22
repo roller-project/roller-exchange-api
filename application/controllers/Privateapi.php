@@ -259,7 +259,7 @@ class Privateapi extends API_Private {
 			$value->type = "buy";
 			$arv[strtotime($value->created)] = $value;
 		}
-		rsort($arv);
+		asort($arv);
 
 		$this->view($arv);
 	}
