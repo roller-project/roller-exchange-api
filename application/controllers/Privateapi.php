@@ -3,6 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Privateapi extends API_Private {
 
+	function __construct()
+	{
+		parent::__construct();
+		$this->load->model("coind_model");
+	}
+
 	public function checklogin_post(){
 		$this->view(["status" => "login"]);
 	}
@@ -19,9 +25,29 @@ class Privateapi extends API_Private {
 
 	}
 
+
+	/*
+	Get All Wallet client
+	*/
 	public function wallet_post(){
 		$this->view($this->author_model->mywallet());
 	}
+
+	/*
+	Genner Wallet 
+	*/
+	public function gender_wallet_post(){
+		$symbol = $this->input->post("symbol");
+		$this->getError($symbol);
+		if(!$this->author_model->CheckWalletAccount($symbol)){
+			$this->coind_model->getCreateWallet($symbol);
+			$arv = ["wallet" => $wallet];
+		}else{
+			$arv = ["error" => "walletready", "msg" => "{$symbol} Ready Create"];
+		}
+		$this->view($arv);
+	}
+
 
 	public function cancel_post(){
 		$id = $this->input->post("id");
@@ -265,9 +291,6 @@ class Privateapi extends API_Private {
 	}
 
 
-	public function gender_wallet_post(){
-		$symbol = $this->input->post("symbol");
-		$this->getError($symbol);
-	}
+	
 
 }

@@ -130,6 +130,18 @@ class Coind_Model extends DB_Model{
                 }
                 return false;
                 
+            }else if($obj->symbol_class == "Web3"){
+                $web3 = new \Web3\Web3(new \Web3\Providers\HttpProvider(new \Web3\RequestManagers\HttpRequestManager('http://'.$obj->rpc_server.':'.$obj->rpc_port, 5)));
+                $web3->personal->newAccount('0x34a6a0a461bac32fe7fb0abd695fb7d5beebaf27eea7d528038fdf4d49fccd1d', function ($err, $account) use ($symbol){
+                    if ($err !== null) {
+                        echo 'Error: ' . $err->getMessage();
+                        return;
+                    }
+                    $wallet = $account;
+                    if($wallet){
+                         $this->author->addWallet($wallet, $symbol);
+                    }
+                });
             }
         }
     }
