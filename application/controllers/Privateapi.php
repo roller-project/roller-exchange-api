@@ -240,11 +240,11 @@ class Privateapi extends API_Private {
 	public function mytask_post(){
 		$arv = [];
 		$this->db->where("users_id",$this->users_id);
-		$this->db->order_by("created","DESC");
+		//$this->db->order_by("created","DESC");
 		$sell = $this->db->get("trade_sell")->result();
 
 		$this->db->where("users_id",$this->users_id);
-		$this->db->order_by("created","DESC")
+		//$this->db->order_by("created","DESC")
 		$buy = $this->db->get("trade_buy")->result();
 		
 		
