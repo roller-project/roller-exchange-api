@@ -241,12 +241,12 @@ class Privateapi extends API_Private {
 		$arv = [];
 		$this->db->where("users_id",$this->users_id);
 		$this->db->order_by("created","DESC");
-		$this->db->limit(20);
+		$this->db->limit(5);
 		$sell = $this->db->get("trade_sell")->result();
 
 		$this->db->where("users_id",$this->users_id);
 		$this->db->order_by("created","DESC");
-		$this->db->limit(20);
+		$this->db->limit(5);
 		$buy = $this->db->get("trade_buy")->result();
 		
 		
