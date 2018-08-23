@@ -62,21 +62,13 @@ class Privateapi extends API_Private {
 	}
 
 
-	public function task_post(){
-		$buy = $this->db->get_where("trade_buy",["users_id" => 1])->result();
-		$sell = $this->db->get_where("trade_sell",["users_id" => 1])->result();
-		$arv = [
-			"buy" => $buy,
-			"sell" => $sell,
-		];
-		$this->view($arv);
-	}
+	
 	/*
 	Buy Post
 	*/
 	public function buy_post(){
-		$trade = $this->input->post("trade");
-		@list($base,$symbol) = explode('/', $trade);
+		$base = $this->input->post("base");
+		$symbol = $this->input->post("trade");
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
@@ -108,8 +100,10 @@ class Privateapi extends API_Private {
 	Sell
 	*/
 	public function sell_post(){
-		$trade = $this->input->get("trade");
-		@list($base,$symbol) = explode('/', $trade);
+		
+		$base = $this->input->post("base");
+		$symbol = $this->input->post("trade");
+		
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
