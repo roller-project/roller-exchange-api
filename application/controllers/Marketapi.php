@@ -76,7 +76,7 @@ class Marketapi extends API_Public {
 		$this->db->group_by("prices");
 		$this->db->order_by("prices","DESC");
 		$this->db->limit(20,0);
-		return $this->db->get("trade_sell")->result();
+		return $this->db->get("markets")->result();
 		
 	}
 
@@ -92,7 +92,7 @@ class Marketapi extends API_Public {
 		$this->db->group_by("prices");
 		$this->db->order_by("prices","ASC");
 		$this->db->limit(20,0);
-		return $this->db->get("trade_sell")->result();
+		return $this->db->get("markets")->result();
 		
 	}
 
