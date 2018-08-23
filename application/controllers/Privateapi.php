@@ -97,7 +97,7 @@ class Privateapi extends API_Private {
 			];
 		$this->addMarkets($arv,"buy","limit");
 		$this->socketio("New Buy");
-		$this->socketio("New Sell","order");
+		$this->socketio("New Buy","order");
 		$this->view($arv);
 		
 		
