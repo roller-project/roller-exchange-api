@@ -82,38 +82,51 @@ class Privateapi extends API_Private {
 			return;
 		}
 
-		$amount = $this->input->post("amount");
-		$prices = $this->input->post("prices");
+		$amount = (float)$this->input->post("amount");
+		$prices = (float)$this->input->post("prices");
 
-		$this->socketio("New Buy");
+		//$this->socketio("New Buy");
 		$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
 		$arv = [
 				"base" => $base,
 				"symbol" => $symbol,
 				"amount" => $amount,
 				"prices" => $prices,
-				"users_id" => $this->users_id,
-				"hash"		=>	sha1($amount.$prices)
+				"hash"		=>	sha1($amount.$prices),
+				
 			];
-			$this->db->insert("trade_buy", $arv);
-			$this->view($arv);
-		/*
-		$execute = $this->execute_buy($base, $symbol, $amount, $prices);
-		if($execute){
-			$arv = [
+		$this->addMarkets($arv,"buy","limit");
+		$this->view($arv,"notification");
+		
+		
+	}
+
+	/*
+	Sell
+	*/
+	public function sell_post(){
+		$trade = $this->input->post("trade");
+		list($symbol,$base) = explode('/', $trade);
+		if(!$symbol || !$base) {
+			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
+			return;
+		}
+
+		$amount = (float)$this->input->post("amount");
+		$prices = (float)$this->input->post("prices");
+
+		//$this->socketio("New Sell");
+		$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
+		$arv = [
 				"base" => $base,
 				"symbol" => $symbol,
-				"amount" => $execute,
+				"amount" => $amount,
 				"prices" => $prices,
-				"users_id" => "1",
-				"hash"		=>	sha1($amount.$prices)
+				"hash"		=>	sha1($amount.$prices),
+				
 			];
-			$this->db->insert("trade_buy", $arv);
-			$this->view($arv);
-		}else{
-			$this->view([]);
-		}
-		*/
+		$this->addMarkets($arv,"sell","limit");
+		$this->view($arv,"notification");
 		
 	}
 
@@ -121,6 +134,15 @@ class Privateapi extends API_Private {
 	Execute Buy
 	*/
 
+	private function addMarkets($arvs,$side="",$type="limit"){
+		$arv = [
+			"users_id" => $this->users_id,
+			"trade_side"	=> $side,
+			"trade_type"	=> $type
+		];
+		$arv = array_merge($arv, $arvs);
+		$this->db->insert("markets", $arv);
+	}
 	
 	private function execute_buy($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
@@ -232,33 +254,7 @@ class Privateapi extends API_Private {
 		];
 		$this->db->insert("trade_history",$arv);
 	}
-	/*
-	Sell
-	*/
-	public function sell_post(){
-		$trade = $this->input->post("trade");
-		list($symbol,$base) = explode('/', $trade);
-		if(!$symbol || !$base) {
-			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
-			return;
-		}
-
-		$amount = $this->input->post("amount");
-		$prices = $this->input->post("prices");
-		$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
-		$arv = [
-			"base" => $base,
-			"symbol" => $symbol,
-			"amount" => $amount,
-			"prices" => $prices,
-			"users_id" => $this->users_id,
-			"hash"		=>	sha1($amount.$prices)
-		];
-		$this->db->insert("trade_sell", $arv);
-		$this->socketio("New Sell");
-		$this->view($arv);
-		
-	}
+	
 
 	/*
 	Call Your Task

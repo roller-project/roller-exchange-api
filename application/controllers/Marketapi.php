@@ -71,6 +71,8 @@ class Marketapi extends API_Public {
 		$this->db->select("*, sum(amount) as amount");
 		$this->db->where("symbol",$symbol);
 		$this->db->where("base",$base);
+		$this->db->where("trade_side","sell");
+		$this->db->where("trade_type","limit");
 		$this->db->group_by("prices");
 		$this->db->order_by("prices","DESC");
 		$this->db->limit(20,0);
@@ -83,11 +85,14 @@ class Marketapi extends API_Public {
 		$this->db->select("*, sum(amount) as amount");
 		$this->db->where("symbol",$symbol);
 		$this->db->where("base",$base);
-		$this->db->group_by("prices");
 
+		$this->db->where("trade_side","buy");
+		$this->db->where("trade_type","limit");
+
+		$this->db->group_by("prices");
 		$this->db->order_by("prices","ASC");
 		$this->db->limit(20,0);
-		return $this->db->get("trade_buy")->result();
+		return $this->db->get("trade_sell")->result();
 		
 	}
 
@@ -176,48 +181,7 @@ class Marketapi extends API_Public {
 		$this->view($data);
 	}
 
-	private function magre_period($a, $b, $time){
-		$arv = [];
-		$open = 0;
-		$low = 0;
-		$high = 0;
-		$close = 0;
-		$volume = 0;
-
-		foreach ($b as $key => $value) {
-			
-
-			if($value->track == $time){
-				
-				$open = $a->open;
-				$low = $a->low;
-				$high = $a->high;
-				$close = $a->close;
-				$volume = $a->volume;
-				
-			}else{
-				$open = $close;
-				$low = 0;
-				$high = 0;
-				$volume = 0;
-			}
-				
-				
-			
-			//$value->openTime = $value->openTime;
-			$value->date = date('Y-m-d\TH:i:s.z\Z',$value->openTime/1000);
-			$value->open = number_format($open,8);
-			$value->low = number_format($low,8);
-			$value->high = number_format($high,8);
-			$value->close = number_format($close,8);
-			$value->volume = number_format($volume,8);
-
-			$arv[] = $value;
-		}
-		return $arv;
-	}
-
-
+	
 	
 
 	private function renderChart($offsetTime, $period, $limit){

@@ -23,8 +23,16 @@ class API_Controller extends REST_Controller{
 		$client->close();
 	}
 
-	public function view($arv){
-		$this->response($arv);
+	public function view($arv, $socket=false){
+		
+		if($socket){
+			$data = $this->response($arv,false);
+			$text = $data;
+			$type = $socket;
+			$this->socketio($text, $type);
+		}else{
+			$this->response($arv);
+		}
 	}
 
 	public function getError($text=[], $ruller=[]){
