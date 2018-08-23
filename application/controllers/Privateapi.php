@@ -76,7 +76,7 @@ class Privateapi extends API_Private {
 	*/
 	public function buy_post(){
 		$trade = $this->input->post("trade");
-		list($symbol,$base) = explode('/', $trade);
+		@list($base,$symbol) = explode('/', $trade);
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
@@ -97,13 +97,17 @@ class Privateapi extends API_Private {
 			];
 		$this->addMarkets($arv,"buy","limit");
 		$this->socketio("New Buy");
-		//$this->socketio("New Buy","order");
+		$this->socketio("Buy {$amount} {$symbol}","order_".$this->users_id);
 		$this->view($arv);
 		
 		
 	}
 
-	public function sell_get(){
+	
+	/*
+	Sell
+	*/
+	public function sell_post(){
 		$trade = $this->input->get("trade");
 		@list($base,$symbol) = explode('/', $trade);
 		if(!$symbol || !$base) {
@@ -113,36 +117,6 @@ class Privateapi extends API_Private {
 
 		$amount = (float)$this->input->get("amount");
 		$prices = (float)$this->input->get("prices");
-
-		$target = "buy";
-		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
-		$arv = [
-				"base" => $base,
-				"symbol" => $symbol,
-				"amount" => $amount,
-				"prices" => $prices,
-				"hash"		=>	sha1($amount.$prices),
-				
-			];
-		$this->addMarkets($arv,$target,"limit");
-		//$this->socketio("New Sell");
-		//$this->socketio("New Sell","order");
-		$arv = array_merge($arv,["target" => $target]);
-		$this->view($arv);
-	}
-	/*
-	Sell
-	*/
-	public function sell_post(){
-		$trade = $this->input->post("trade");
-		@list($symbol,$base) = explode('/', $trade);
-		if(!$symbol || !$base) {
-			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
-			return;
-		}
-
-		$amount = (float)$this->input->post("amount");
-		$prices = (float)$this->input->post("prices");
 
 		
 		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
@@ -156,7 +130,7 @@ class Privateapi extends API_Private {
 			];
 		$this->addMarkets($arv,"sell","limit");
 		$this->socketio("New Sell");
-		//$this->socketio("New Sell","order");
+		$this->socketio("Sell {$amount} {$symbol}","order_".$this->users_id);
 		
 		$this->view($arv);
 		
