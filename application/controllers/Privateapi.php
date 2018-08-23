@@ -217,7 +217,7 @@ class Privateapi extends API_Private {
 			"amount" => ($obj->amount <= $amount ? $obj->amount : $amount),
 			"total"	=> $prices * $obj->amount,
 			"trade_type"	=> $target,
-			"form_id" => $obj->trade_id
+			"trade_id" => $obj->trade_id
 		];
 		$this->db->insert("trade_invoice", $arv);
 
