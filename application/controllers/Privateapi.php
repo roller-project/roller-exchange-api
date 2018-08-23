@@ -85,7 +85,7 @@ class Privateapi extends API_Private {
 		$amount = (float)$this->input->post("amount");
 		$prices = (float)$this->input->post("prices");
 
-		$this->socketio("New Buy");
+		
 		$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
 		$arv = [
 				"base" => $base,
@@ -96,6 +96,8 @@ class Privateapi extends API_Private {
 				
 			];
 		$this->addMarkets($arv,"buy","limit");
+		$this->socketio("New Buy");
+		$this->socketio("New Sell","order");
 		$this->view($arv);
 		
 		
@@ -115,7 +117,7 @@ class Privateapi extends API_Private {
 		$amount = (float)$this->input->post("amount");
 		$prices = (float)$this->input->post("prices");
 
-		$this->socketio("New Sell");
+		
 		$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
 		$arv = [
 				"base" => $base,
@@ -126,6 +128,9 @@ class Privateapi extends API_Private {
 				
 			];
 		$this->addMarkets($arv,"sell","limit");
+		$this->socketio("New Sell");
+		$this->socketio("New Sell","order");
+		
 		$this->view($arv);
 		
 	}
