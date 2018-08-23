@@ -194,7 +194,7 @@ class Privateapi extends API_Private {
 
 	private function targetSell($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
-		$data = $this->db->query("select * from markets where prices <= ".$prices." AND trade_type = 'limit' AND trade_side='sell' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
+		$data = $this->db->query("select * from markets where prices >= ".$prices." AND trade_type = 'limit' AND trade_side='buy' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
 		
 		$arv = [];
 		foreach ($data as $key => $value) {
