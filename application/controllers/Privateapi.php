@@ -86,7 +86,7 @@ class Privateapi extends API_Private {
 		$prices = (float)$this->input->post("prices");
 
 		
-		$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
+		//$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
 		$arv = [
 				"base" => $base,
 				"symbol" => $symbol,
@@ -97,7 +97,7 @@ class Privateapi extends API_Private {
 			];
 		$this->addMarkets($arv,"buy","limit");
 		$this->socketio("New Buy");
-		$this->socketio("New Buy","order");
+		//$this->socketio("New Buy","order");
 		$this->view($arv);
 		
 		
@@ -118,7 +118,7 @@ class Privateapi extends API_Private {
 		$prices = (float)$this->input->post("prices");
 
 		
-		$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
+		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
 		$arv = [
 				"base" => $base,
 				"symbol" => $symbol,
@@ -129,7 +129,7 @@ class Privateapi extends API_Private {
 			];
 		$this->addMarkets($arv,"sell","limit");
 		$this->socketio("New Sell");
-		$this->socketio("New Sell","order");
+		//$this->socketio("New Sell","order");
 		
 		$this->view($arv);
 		
@@ -146,28 +146,66 @@ class Privateapi extends API_Private {
 			"trade_type"	=> $type
 		];
 		$arv = array_merge($arv, $arvs);
-		$this->db->insert("markets", $arv);
+
+		$prices = (float)$arv["prices"];
+		$amount = (float)$arv["amount"];
+		$base = $arv["base"];
+		$symbol = $arv["symbol"];
+
+		/*
+		Validate
+		*/
+		if(!$prices || !$amount || !$side || !$base || !$symbol){
+			return false;
+		}
+
+		if($prices < 0 || $amount < 0){
+			return false;
+		}
+
+		/*
+		Query Target
+		*/
+		$sumamount = 0;
+		if($side == "buy"){
+			$sumamount = $this->targetBuy($base, $symbol, $amount, $prices);
+		}else if($side == "sell"){
+			$sumamount = $this->targetSell($base, $symbol, $amount, $prices);
+		}
+		if($sumamount > 0){
+			$arv["amount"] = $sumamount;
+			$this->db->insert("markets", $arv);
+		}
 	}
 	
-	private function execute_buy($base, $symbol, $amount, $prices){
+	private function targetBuy($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
-		$data = $this->db->query("select * from trade_sell where prices <= ".$prices." order by prices asc")->result();
-		
+		$data = $this->db->query("select * from markets where prices <= ".$prices." AND trade_type = 'limit' AND trade_side='sell' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
 		
 		$arv = [];
 		foreach ($data as $key => $value) {
-			
-			
 				if($amount <= 0) return;
 				$arv[] = $value;
 				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"buy");
-				//$this->update_balancer_member_buy($value->amount, $prices);
-				//$this->remove_taks_sell($ex_amount, $prices, $value->id);
-			
 		}
-		print_r($arv);
-		return $amount - $ex_amount;
+
+		return $amount;
 	}
+
+	private function targetSell($base, $symbol, $amount, $prices){
+		//$this->db->select('* prices =< '.$prices);
+		$data = $this->db->query("select * from markets where prices <= ".$prices." AND trade_type = 'limit' AND trade_side='sell' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
+		
+		$arv = [];
+		foreach ($data as $key => $value) {
+				if($amount <= 0) return;
+				$arv[] = $value;
+				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"buy");
+		}
+
+		return $amount;
+	}
+
 
 	private function create_invoice($base, $symbol, $amount, $prices, $obj, $target){
 		$arv = [
@@ -183,19 +221,19 @@ class Privateapi extends API_Private {
 		];
 		$this->db->insert("trade_invoice", $arv);
 
-		$this->exitTradeSell($obj, $amount - $obj->amount, $prices,1);
+		$this->exitTradeSell($obj, $amount - $obj->amount, $prices,$this->users_id, $target);
 		return $amount - $obj->amount;
 
 
 	}
 
-	private function exitTradeSell($obj, $amount, $prices, $userid){
+	private function exitTradeSell($obj, $amount, $prices, $userid, $target){
 		if($obj->amount <= $amount){
 			/*
 			Create Invoice for Sell
 			*/
-			$this->db->delete("trade_sell",["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount, $prices, "buy");
+			$this->db->delete("markets",["trade_id" => $obj->trade_id]);
+			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount, $prices, $target);
 			/*
 			Add Balancer for Buyer
 			*/
@@ -204,8 +242,8 @@ class Privateapi extends API_Private {
 			/*
 			Create Invoice for sell
 			*/
-			$this->db->update("trade_sell",["amount" => $obj->amount - $amount],["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount - $amount, $prices, "buy");
+			$this->db->update("markets",["amount" => $obj->amount - $amount],["trade_id" => $obj->trade_id]);
+			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount - $amount, $prices, $target);
 			/*
 			Add Balancer for Buyer
 			*/
@@ -213,21 +251,7 @@ class Privateapi extends API_Private {
 		}
 	}
 
-	private function exitTradeBuy($obj, $amount, $prices){
-		if($obj->amount <= $amount){
-			/*
-			Create Invoice for buy
-			*/
-			$this->db->delete("trade_buy",["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount, $prices, "sell");
-		}else{
-			/*
-			Create Invoice for buy
-			*/
-			$this->db->update("trade_buy",["amount" => $obj->amount - $amount],["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount - $amount, $prices, "sell");
-		}
-	}
+	
 
 	/*
 	Update Balancer for buyer
