@@ -36,7 +36,7 @@ class Marketapi extends API_Public {
 
 	public function trade_get(){
 		$trade = $this->input->get("trade");
-		list($symbol,$base) = explode('/', $trade);
+		list($base,$symbol) = explode('/', $trade);
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
