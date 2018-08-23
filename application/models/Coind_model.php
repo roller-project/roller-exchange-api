@@ -124,7 +124,7 @@ class Coind_Model extends DB_Model{
                 if($request) {
                     $wallet = $request->result();
                     if($wallet){
-                        $this->author->addWallet($wallet, $symbol);
+                        $this->author_model->addWallet($wallet, $symbol);
                     }
                    return $wallet;
                 }
@@ -140,7 +140,7 @@ class Coind_Model extends DB_Model{
                     }
                     $wallet = $account;
                     if($wallet){
-                         $this->author->addWallet($wallet, $symbol);
+                         $this->author_model->addWallet($wallet, $symbol);
                     }
                 });
             }
@@ -185,7 +185,7 @@ class Coind_Model extends DB_Model{
         if($data){
             $validate = $data->result();
             if($validate){
-                $this->author->deposit("BTC", $form, $amount);
+                $this->author_model->deposit("BTC", $form, $amount);
                 $this->writeTxt("BTC",$validate, $amount, $form);
             }
         }

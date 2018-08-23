@@ -126,7 +126,7 @@ class Author_Model extends DB_Model{
             if(!$check){
                 $arv = [
                     "btc_address" => $address,
-                    "users_id" => $this->getLoginID(),
+                    "users_id" => $this->users_id,
                 ];
                 $this->db->insert("wallet_btc",$arv);
             }
@@ -135,7 +135,7 @@ class Author_Model extends DB_Model{
             if(!$check){
                 $arv = [
                     "alt_address" => $address,
-                    "users_id" => $this->getLoginID(),
+                    "users_id" => $this->users_id,
                     "alt_symbol" => $symbol
                 ];
                 $this->db->insert("wallet_alt",$arv);
@@ -148,11 +148,11 @@ class Author_Model extends DB_Model{
 
     public function CheckWalletAccount($symbol){
         if($symbol == "BTC"){
-            $this->db->where("users_id", $this->getLoginID());
+            $this->db->where("users_id", $this->users_id);
             $count = $this->db->count_all_results("wallet_btc");
             if($count > 0) return true;
         }else{
-            $this->db->where("users_id", $this->getLoginID());
+            $this->db->where("users_id", $this->users_id);
             $this->db->where("alt_symbol", $symbol);
             
             $count = $this->db->count_all_results("wallet_alt");
