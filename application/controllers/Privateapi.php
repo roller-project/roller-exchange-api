@@ -200,7 +200,7 @@ class Privateapi extends API_Private {
 		foreach ($data as $key => $value) {
 				if($amount <= 0) return;
 				$arv[] = $value;
-				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"buy");
+				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"sell");
 		}
 
 		return $amount;
