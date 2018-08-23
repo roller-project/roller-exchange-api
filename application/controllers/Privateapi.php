@@ -52,12 +52,8 @@ class Privateapi extends API_Private {
 	public function cancel_post(){
 		$id = $this->input->post("id");
 		$type = $this->input->post("type");
-		if($type == "sell"){
-			$this->db->delete("trade_sell",["trade_id" => $id]);
-		}
-		if($type == "buy"){
-			$this->db->delete("trade_buy",["trade_id" => $id]);
-		}
+		
+		$this->db->delete("markets",["trade_id" => $id, "users_id" => $this->users_id]);
 		$this->socketio("reload");
 	}
 
