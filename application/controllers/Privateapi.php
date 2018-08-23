@@ -103,12 +103,39 @@ class Privateapi extends API_Private {
 		
 	}
 
+	public function sell_get(){
+		$trade = $this->input->get("trade");
+		@list($base,$symbol) = explode('/', $trade);
+		if(!$symbol || !$base) {
+			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
+			return;
+		}
+
+		$amount = (float)$this->input->get("amount");
+		$prices = (float)$this->input->get("prices");
+
+		$target = "buy";
+		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
+		$arv = [
+				"base" => $base,
+				"symbol" => $symbol,
+				"amount" => $amount,
+				"prices" => $prices,
+				"hash"		=>	sha1($amount.$prices),
+				
+			];
+		$this->addMarkets($arv,$target,"limit");
+		//$this->socketio("New Sell");
+		//$this->socketio("New Sell","order");
+		$arv = array_merge($arv,["target" => $target]);
+		$this->view($arv);
+	}
 	/*
 	Sell
 	*/
 	public function sell_post(){
 		$trade = $this->input->post("trade");
-		list($symbol,$base) = explode('/', $trade);
+		@list($symbol,$base) = explode('/', $trade);
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
@@ -172,6 +199,7 @@ class Privateapi extends API_Private {
 		}else if($side == "sell"){
 			$sumamount = $this->targetSell($base, $symbol, $amount, $prices);
 		}
+		
 		if($sumamount > 0){
 			$arv["amount"] = $sumamount;
 			$this->db->insert("markets", $arv);
@@ -180,15 +208,18 @@ class Privateapi extends API_Private {
 	
 	private function targetBuy($base, $symbol, $amount, $prices){
 		//$this->db->select('* prices =< '.$prices);
-		$data = $this->db->query("select * from markets where prices >= ".$prices." AND trade_type = 'limit' AND trade_side='sell' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
+		$data = $this->db->query("select * from markets where prices <= ".$prices." AND trade_type = 'limit' AND trade_side='sell' AND base='".$base."' AND symbol='".$symbol."' order by prices asc")->result();
 		
 		$arv = [];
 		foreach ($data as $key => $value) {
 				if($amount <= 0) return;
 				$arv[] = $value;
-				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"buy");
+				/*
+				Create Invoice for Seller
+				*/
+				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"sell");
 		}
-
+		
 		return $amount;
 	}
 
@@ -200,16 +231,19 @@ class Privateapi extends API_Private {
 		foreach ($data as $key => $value) {
 				if($amount <= 0) return;
 				$arv[] = $value;
+				/*
+				Create Invoice for Buyder
+				*/
 				$amount = $this->create_invoice($base, $symbol, $amount, $prices, $value,"sell");
 		}
-
+		
 		return $amount;
 	}
 
 
 	private function create_invoice($base, $symbol, $amount, $prices, $obj, $target){
 		$arv = [
-			"users_id" => $this->users_id,
+			"users_id" => $obj->users_id,
 			"base" => $base,
 			"symbol" => $symbol,
 			"action_prices" => $obj->prices,
@@ -221,33 +255,54 @@ class Privateapi extends API_Private {
 		];
 		$this->db->insert("trade_invoice", $arv);
 
-		$this->exitTradeSell($obj, $amount - $obj->amount, $prices,$this->users_id, $target);
+		/*
+		Exit Order Member
+		*/
+		$this->exitTrader($obj, $amount - $obj->amount, $prices,$obj->users_id, $target);
+
+		/*
+		Add Invoice for athour
+		*/
+		$arv["users_id"] = $this->users_id;
+		$arv["trade_type"] = ($target == "buy" ? "sell" : "bull");
+		$this->db->insert("trade_invoice", $arv);
+
 		return $amount - $obj->amount;
 
 
 	}
 
-	private function exitTradeSell($obj, $amount, $prices, $userid, $target){
+	private function exitTrader($obj, $amount, $prices, $userid, $target){
 		if($obj->amount <= $amount){
 			/*
 			Create Invoice for Sell
 			*/
 			$this->db->delete("markets",["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount, $prices, $target);
+			//$this->write_trade_history($obj->base, $obj->symbol, $obj->amount, $prices, $target);
 			/*
 			Add Balancer for Buyer
 			*/
-			$this->updateBalancerBuyer($obj->base, $obj->symbol, $obj->amount, $userid);
+			if($target == "sell"){
+				$this->updateBalancerBuyer($obj->base, $obj->symbol, $obj->amount, $obj->prices, $userid);
+			}else if($target == "buy"){
+				$this->updateBalancerSeler($obj->base, $obj->symbol, $obj->amount, $obj->prices, $userid);
+			}
 		}else{
 			/*
 			Create Invoice for sell
 			*/
 			$this->db->update("markets",["amount" => $obj->amount - $amount],["trade_id" => $obj->trade_id]);
-			$this->write_trade_history($obj->base, $obj->symbol, $obj->amount - $amount, $prices, $target);
+			//$this->write_trade_history($obj->base, $obj->symbol, $obj->amount - $amount, $prices, $target);
 			/*
 			Add Balancer for Buyer
 			*/
-			$this->updateBalancerBuyer($obj->base, $obj->symbol, $obj->amount - $amount, $userid);
+			
+
+			if($target == "sell"){
+				$this->updateBalancerBuyer($obj->base, $obj->symbol, $obj->amount - $amount, $obj->prices, $userid);
+			}else if($target == "buy"){
+				$this->updateBalancerSeler($obj->base, $obj->symbol, $obj->amount - $amount, $obj->prices, $userid);
+			}
 		}
 	}
 
@@ -256,14 +311,68 @@ class Privateapi extends API_Private {
 	/*
 	Update Balancer for buyer
 	*/
-	private function updateBalancerBuyer($base, $symbol, $amount, $userid){
+	private function updateBalancerBuyer($base, $symbol, $amount, $prices, $userid){
+		// Update Blancer Buyder ( when sell Alt Coin);
 
+		/* 
+		Get Info Seller
+		Update Balancer BTC, Remove Blancer Alt
+		*/
+
+		$data = $this->db->get_where("wallet_btc",["users_id" => $userid])->row();
+		$data_alt = $this->db->get_where("wallet_alt",["alt_symbol" => $symbol,"users_id" => $userid])->row();
+		if($data_alt->alt_trade_avalible >= $amount){
+			//Remove Alt Blancer Trader
+			$this->db->update("wallet_alt",["alt_trade_avalible" => $data_alt->alt_trade_avalible - $amount],["alt_id" => $data_alt->alt_id]);
+			//Plus BTC Balancer
+			$this->db->update("wallet_btc",["alt_trade_avalible" => $data->alt_trade_avalible + ($amount * $prices)],["btc_id" => $data->btc_id]);
+		}
+
+
+		//Update Alt Blancer of Buyer
+		// Remove BTC Blancer Buyer
+		$data = $this->db->get_where("wallet_btc",["users_id" => $this->author_model->users_id])->row();
+		$data_alt = $this->db->get_where("wallet_alt",["alt_symbol" => $symbol,"users_id" => $this->author_model->users_id])->row();
+		if($data_alt->alt_trade_avalible >= $amount){
+			//Remove Alt Blancer Trader
+			$this->db->update("wallet_alt",["alt_trade_avalible" => $data_alt->alt_trade_avalible + $amount],["alt_id" => $data_alt->alt_id]);
+			//Plus BTC Balancer
+			$this->db->update("wallet_btc",["alt_trade_avalible" => $data->alt_trade_avalible - ($amount * $prices)],["btc_id" => $data->btc_id]);
+		}
 	}
 
 	/*
 	Update Balancer for seller
 	*/
-	private function updateBalancerSeler($base, $symbol, $amount, $userid){
+	private function updateBalancerSeler($base, $symbol, $amount, $prices, $userid){
+
+		// Update Blancer Buyder ( when sell Alt Coin);
+
+		/* 
+		Get Info Buyer
+		Update Balancer BTC, Remove Blancer Alt
+		*/
+
+		$data = $this->db->get_where("wallet_btc",["users_id" => $userid])->row();
+		$data_alt = $this->db->get_where("wallet_alt",["alt_symbol" => $symbol,"users_id" => $userid])->row();
+		if($data_alt->alt_trade_avalible >= $amount){
+			//Remove Alt Blancer Trader
+			$this->db->update("wallet_alt",["alt_trade_avalible" => $data_alt->alt_trade_avalible + $amount],["alt_id" => $data_alt->alt_id]);
+			//Plus BTC Balancer
+			$this->db->update("wallet_btc",["alt_trade_avalible" => $data->alt_trade_avalible - ($amount * $prices)],["btc_id" => $data->btc_id]);
+		}
+
+
+		//Update Alt Blancer of Seller
+		// Remove BTC Blancer Seller
+		$data = $this->db->get_where("wallet_btc",["users_id" => $this->author_model->users_id])->row();
+		$data_alt = $this->db->get_where("wallet_alt",["alt_symbol" => $symbol,"users_id" => $this->author_model->users_id])->row();
+		if($data_alt->alt_trade_avalible >= $amount){
+			//Remove Alt Blancer Trader
+			$this->db->update("wallet_alt",["alt_trade_avalible" => $data_alt->alt_trade_avalible - $amount],["alt_id" => $data_alt->alt_id]);
+			//Plus BTC Balancer
+			$this->db->update("wallet_btc",["alt_trade_avalible" => $data->alt_trade_avalible + ($amount * $prices)],["btc_id" => $data->btc_id]);
+		}
 
 	}
 	/*
