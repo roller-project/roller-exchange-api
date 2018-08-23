@@ -109,8 +109,8 @@ class Privateapi extends API_Private {
 			return;
 		}
 
-		$amount = (float)$this->input->get("amount");
-		$prices = (float)$this->input->get("prices");
+		$amount = (float)$this->input->post("amount");
+		$prices = (float)$this->input->post("prices");
 
 		
 		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
