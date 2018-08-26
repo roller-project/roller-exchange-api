@@ -8,28 +8,30 @@ class Bottrade extends Robottrade {
 			$this->db->order_by("trade_id","DESC");
 			$lastprices = $this->db->get_where("trade_history")->row();
 			$arv = [];
+			$arvprices = [0.00003,0.0003,0.00002,0.0002,0.00004,0.0004,0.002,0.0000003];
 			
 			for ($i = 0; $i < 20; ++$i)
 			{
-			    $arv[] = (float)$lastprices->prices + 0.00002 + (0.000001 * $i);
+				$key = array_rand($arvprices,1);
+			    $arv[] = (float)$lastprices->prices + 0.000025 + (0.0000001 * $i);
 			   // $arv[] = (float)$lastprices->prices - (0.00000001 * $i);
 			}
 
 			
-			$rand = mt_rand(1,10);
+			$rand = mt_rand(1,3);
 			for ($i=0; $i <$rand ; $i++) { 
 				$key = array_rand($arv,1);
 				$this->curl("buy",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,10)]);
 				echo "Buy ".$arv[$key];
-				sleep(30);
+				sleep(5);
 			}
 
-			$rand = mt_rand(1,10);
+			$rand = mt_rand(1,3);
 			for ($i=0; $i <$rand ; $i++) { 
 				$key = array_rand($arv,1);
 				$this->curl("sell",["trade" => "ROL/BTC","prices" => $arv[$key],"amount" => mt_rand(1,50)]);
 				echo "Sell ".$arv[$key];
-				sleep(30);
+				sleep(5);
 			}
 			
 		}

@@ -222,4 +222,19 @@ class Author_Model extends DB_Model{
         fclose($fp);
     }
 
+
+
+    /*
+    Info member
+    */
+
+    public function info(){
+         $this->db->where("id", $this->getLoginID());
+         $data = $this->db->get("account")->row();
+         $std = new stdClass();
+         $std->user_id = $data->id;
+         $std->email = $data->email;
+         return $std;
+    }
+
 }

@@ -377,6 +377,15 @@ class Privateapi extends API_Private {
 	}
 
 
+
+	/*
+	Info Member
+	*/
+
+	public function info_post(){
+		$arv = $this->author_model->info();
+		$this->view($arv);
+	}
 	
 
 }
