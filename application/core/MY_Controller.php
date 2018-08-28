@@ -65,13 +65,7 @@ class API_Private extends API_Controller{
 	function __construct()
 	{
 		parent::__construct("private_api");
-		//$this->config->set_item("auth_source","library");
-		//$this->config->set_item("auth_model_class") = 'author_model';
 		
-		//if(!$this->is_login()){
-		//	$this->view(["error" => "Login Session"]);
-		//	exit();
-		//}
 		$this->users_id = $this->author_model->users_id;
 
 		

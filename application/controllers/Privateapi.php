@@ -7,6 +7,7 @@ class Privateapi extends API_Private {
 	{
 		parent::__construct();
 		$this->load->model("coind_model");
+		$this->load->model("trade_model");
 	}
 
 	public function checklogin_post(){
@@ -67,8 +68,8 @@ class Privateapi extends API_Private {
 	Buy Post
 	*/
 	public function buy_post(){
-		$base = $this->input->post("base");
-		$symbol = $this->input->post("trade");
+		$base = trim(strtoupper($this->input->post("base")));
+		$symbol = trim(strtoupper($this->input->post("symbol")));
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
@@ -77,7 +78,9 @@ class Privateapi extends API_Private {
 		$amount = (float)$this->input->post("amount");
 		$prices = (float)$this->input->post("prices");
 
+		$arv = $this->trade_model->dbQuery($base, $symbol, $amount, $prices, "buylimit");
 		
+		/*
 		//$this->write_trade_history($base, $symbol, $amount, $prices,"buy");
 		$arv = [
 				"base" => $base,
@@ -90,6 +93,8 @@ class Privateapi extends API_Private {
 		$this->addMarkets($arv,"buy","limit");
 		$this->socketio("New Buy");
 		$this->socketio("Buy {$amount} {$symbol}","order_".$this->users_id);
+		
+		*/
 		$this->view($arv);
 		
 		
