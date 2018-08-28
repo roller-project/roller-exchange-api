@@ -106,9 +106,8 @@ class Privateapi extends API_Private {
 	*/
 	public function sell_post(){
 		
-		$base = $this->input->post("base");
-		$symbol = $this->input->post("trade");
-		
+		$base = trim(strtoupper($this->input->post("base")));
+		$symbol = trim(strtoupper($this->input->post("symbol")));
 		if(!$symbol || !$base) {
 			$this->view(["error" => true,"msg" => "Symbol or basecoin Empty"]);
 			return;
@@ -117,19 +116,7 @@ class Privateapi extends API_Private {
 		$amount = (float)$this->input->post("amount");
 		$prices = (float)$this->input->post("prices");
 
-		
-		//$this->write_trade_history($base, $symbol, $amount, $prices,"sell");
-		$arv = [
-				"base" => $base,
-				"symbol" => $symbol,
-				"amount" => $amount,
-				"prices" => $prices,
-				"hash"		=>	sha1($amount.$prices),
-				
-			];
-		$this->addMarkets($arv,"sell","limit");
-		$this->socketio("New Sell");
-		$this->socketio("Sell {$amount} {$symbol}","order_".$this->users_id);
+		$arv = $this->trade_model->dbQuery($base, $symbol, $amount, $prices, "selllimit");
 		
 		$this->view($arv);
 		

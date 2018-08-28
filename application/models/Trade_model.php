@@ -1,9 +1,11 @@
 <?php
 class Trade_Model extends DB_Model{
-
+    private $login_id = 0;
     function __construct()
     {
         parent::__construct();
+        $this->login_id = $this->author_model->getLoginID();
+
     }
     public $return = [];
 
@@ -13,7 +15,7 @@ class Trade_Model extends DB_Model{
     public function getBuyTask($base, $symbol, $prices){
     	$this->db->where("trade_side","buy");
     	$this->db->where("trade_type","limit");
-    	$this->db->where('prices =<', $prices);
+    	$this->db->where('prices >=', $prices);
     	$this->db->where("symbol",$symbol);
     	$this->db->where("base",$base);
     	return $this->db->get("markets")->result();
@@ -42,7 +44,7 @@ class Trade_Model extends DB_Model{
     			$data =$this->createTaskBuy($base, $symbol, $amount, $prices, "buylimit");
     		break;
     		case 'selllimit':
-    			# code...
+    			$data =$this->createTaskSell($base, $symbol, $amount, $prices, "selllimit");
     			break;
     		default:
     			# code...
@@ -53,6 +55,23 @@ class Trade_Model extends DB_Model{
     }
 
 
+
+    private function createTaskSell($base, $symbol, $amount, $prices, $type=""){
+        $getBuyTask = $this->getBuyTask($base, $symbol, $prices);
+        $target_amount = 0;
+        $error = false;
+        $status = false;
+
+        foreach ($getBuyTask as $key => $value) {
+            if($amount > 0 && !$error){
+                if($value->amount > $amount){
+
+                }else{
+
+                }
+            }
+        }
+    }
 
     /*
 	Create Task Buy
@@ -74,7 +93,7 @@ class Trade_Model extends DB_Model{
                     /*
                     Update Market ID
                     */
-                    $updatedata = $this->updateBlancerBTC($value->users_id, $amount * $prices, $this->users_id);
+                    $updatedata = $this->updateBlancerBTC($value->users_id, $amount * $prices, $this->login_id);
                     if($updatedata == true){
                         $this->db->update("markets",$arv,["trade_id" => $value->trade_id]);
                         $status = true;
@@ -87,7 +106,7 @@ class Trade_Model extends DB_Model{
                     /*
                     Remove Markets
                     */
-                    $updatedata = $this->updateBlancerBTC($value->users_id, $value->amount * $prices, $this->users_id);
+                    $updatedata = $this->updateBlancerBTC($value->users_id, $value->amount * $prices, $this->login_id);
                     if($updatedata == true){
                         $this->db->delete("markets",["trade_id" => $value->trade_id]);
                         $status = true;
@@ -111,15 +130,85 @@ class Trade_Model extends DB_Model{
                 "symbol"    =>  $symbol,
                 "prices"    => $prices,
                 "amount"    => $amount,
-                "users_id"  => $this->users_id,
+                "users_id"  => $this->login_id,
+                "hash"      =>  sha1(time())
             ];
-            $this->db->insert("markets", $arv);
-            $status = true;
+            if($this->blockTradeBTCBalancer($prices * $amount)){
+                $this->db->insert("markets", $arv);
+                 $status = true;
+            }else{
+                 $status = false;
+                 $error = "BTC Blancer Empty";
+            }
+           
         }
     	return ["status" => $status, "error" => $error];
 
     }
 
+    /*
+    Block Trader Balancer BTC
+    */
+    private function blockTradeBTCBalancer($balancer){
+        $this->db->where("users_id", $this->login_id);
+        $getbalancerTarget = $this->db->get("wallet_btc")->row();
+
+
+        /*
+            Check Balancer
+        */
+        if((float)$getbalancerTarget->btc_trade_avalible < $balancer) return false;
+
+        /*
+        Query Block
+        */
+
+        $total = (float)$getbalancerTarget->btc_trade_avalible - (float)$balancer;
+        $blockTotal = (float)$getbalancerTarget->btc_block_balancer + (float)$balancer;
+
+        $arv = [
+            "btc_trade_avalible" => $total,
+            "btc_block_balancer" => $blockTotal,
+            "updated"   =>  date("Y-m-d h:i:s")
+        ];
+        $target = $this->db->update("wallet_btc",$arv,["btc_id" => $getbalancerTarget->btc_id]);
+        if($target){
+            return true;
+        }
+        return false;
+    }
+
+    /*
+    Un Block Trader Balancer BTC
+    */
+
+    private function unblockTradeBTCBalancer($balancer){
+        $this->db->where("users_id", $this->login_id);
+        $getbalancerTarget = $this->db->get("wallet_btc")->row();
+
+        /*
+            Check Balancer
+        */
+        if((float)$getbalancerTarget->btc_block_balancer < $balancer) return false;
+
+        /*
+        Query Un Block
+        */
+
+        $total = (float)$getbalancerTarget->btc_trade_avalible + (float)$balancer;
+        $blockTotal = (float)$getbalancerTarget->btc_block_balancer - (float)$balancer;
+
+        $arv = [
+            "btc_trade_avalible" => $total,
+            "btc_block_balancer" => $blockTotal,
+            "updated"   =>  date("Y-m-d h:i:s")
+        ];
+        $target = $this->db->update("wallet_btc",$arv,["btc_id" => $getbalancerTarget->btc_id]);
+        if($target){
+            return true;
+        }
+        return false;
+    }
     /*
     Create Update Balancer
     For buyer & Seller
@@ -134,14 +223,18 @@ class Trade_Model extends DB_Model{
             $this->db->where("users_id", $target_form_user);
             $getbalancerTarget = $this->db->get("wallet_btc")->row();
             $total = (float)$getbalancerTarget->btc_trade_avalible - (float)$balancer;
-            if($total =< 0){
+            if($total <= 0){
                 return ["error" => "btcbalancer","msg" => "Buyer not BTC"];
                 exit();
             }
             $arv = [
-                "btc_trade_avalible" => $total;
+                "btc_trade_avalible" => $total
             ];
             $target = $this->db->update("wallet_btc",$arv,["btc_id" => $getbalancerTarget->btc_id]);
+
+            /*
+                Add Alt Balancer
+            */
         }
 
 
@@ -153,9 +246,13 @@ class Trade_Model extends DB_Model{
             $getbalancer = $this->db->get("wallet_btc")->row();
 
             $arv = [
-                "btc_trade_avalible" => (float)$getbalancer->btc_trade_avalible + (float)$balancer;
+                "btc_trade_avalible" => (float)$getbalancer->btc_trade_avalible + (float)$balancer
             ];
             $this->db->update("wallet_btc",$arv,["btc_id" => $getbalancer->btc_id]);
+
+            /*
+                Remove Alt Balancer
+            */
         }
         return $target;
     }
