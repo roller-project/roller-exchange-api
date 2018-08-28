@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 20, 2018 at 04:20 AM
+-- Generation Time: Aug 28, 2018 at 08:27 AM
 -- Server version: 5.6.35
 -- PHP Version: 7.1.8
 
@@ -101,7 +101,7 @@ CREATE TABLE `account_login` (
 --
 
 INSERT INTO `account_login` (`cache_id`, `users_id`, `session_id`, `updated`) VALUES
-(61, 1, '0c8ae8bb5203476285251e0a9a703163aeb780e9', '2018-08-19 19:17:27');
+(62, 1, '1b036a12a22203f2c29b695bbd7c5a5303924287', '2018-08-28 04:27:12');
 
 -- --------------------------------------------------------
 
@@ -132,6 +132,34 @@ CREATE TABLE `api_access` (
   `ip_addresses` text,
   `date_created` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `markets`
+--
+
+CREATE TABLE `markets` (
+  `trade_id` bigint(20) NOT NULL,
+  `trade_side` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `trade_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'limit',
+  `base` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `symbol` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
+  `amount` float(10,2) NOT NULL,
+  `prices` float NOT NULL,
+  `users_id` int(10) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `markets`
+--
+
+INSERT INTO `markets` (`trade_id`, `trade_side`, `trade_type`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`) VALUES
+(8, 'buy', 'limit', 'BTC', 'ROL', 9764.00, 0.000026, 1, '2018-08-23 11:37:30', '52071444a72209feb2d50a51592dc722097ac2df'),
+(9, 'buy', 'limit', 'BTC', 'ROL', 9764.00, 0.000026, 1, '2018-08-23 11:38:56', '52071444a72209feb2d50a51592dc722097ac2df'),
+(10, 'sell', 'limit', 'BTC', 'ROL', 9764.00, 0.0000252, 1, '2018-08-23 11:38:56', '52071444a72209feb2d50a51592dc722097ac2df');
 
 -- --------------------------------------------------------
 
@@ -201,31 +229,6 @@ INSERT INTO `symbol_trade` (`symbol_id`, `symbol_name`, `symbol_fullname`, `symb
 -- --------------------------------------------------------
 
 --
--- Table structure for table `trade_buy`
---
-
-CREATE TABLE `trade_buy` (
-  `trade_id` bigint(20) NOT NULL,
-  `base` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `symbol` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `amount` float(10,2) NOT NULL,
-  `prices` float NOT NULL,
-  `users_id` int(10) NOT NULL,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `trade_buy`
---
-
-INSERT INTO `trade_buy` (`trade_id`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`) VALUES
-(1, 'BTC', 'ROL', 100.00, 0.000025, 1, '2018-08-16 22:06:58', ''),
-(2, 'BTC', 'ROL', 102.00, 0.000025, 4, '2018-08-16 22:07:15', '');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `trade_history`
 --
 
@@ -249,33 +252,28 @@ CREATE TABLE `trade_history` (
 INSERT INTO `trade_history` (`trade_id`, `trade_type`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`, `total`) VALUES
 (1, '', 'BTC', 'ROL', 100.00, 0.000025, 1, '2018-08-16 22:06:58', '', 0),
 (2, '', 'BTC', 'ROL', 102.00, 0.000026, 4, '2018-08-16 22:07:15', '', 0),
-(3, '', 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-16 22:06:58', '', 0);
+(3, '', 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-19 22:06:58', '', 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `trade_sell`
+-- Table structure for table `trade_invoice`
 --
 
-CREATE TABLE `trade_sell` (
-  `trade_id` bigint(20) NOT NULL,
-  `base` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `symbol` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
-  `amount` float(10,2) NOT NULL,
-  `prices` float NOT NULL,
+CREATE TABLE `trade_invoice` (
+  `invoice_id` bigint(20) NOT NULL,
   `users_id` int(10) NOT NULL,
+  `trade_id` bigint(20) NOT NULL,
+  `trade_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `base` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `symbol` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `action_prices` float NOT NULL,
+  `target_prices` float NOT NULL,
+  `amount` float NOT NULL,
+  `total` float NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+  `status` int(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `trade_sell`
---
-
-INSERT INTO `trade_sell` (`trade_id`, `base`, `symbol`, `amount`, `prices`, `users_id`, `created`, `hash`) VALUES
-(1, 'BTC', 'ROL', 100.00, 0.000025, 1, '2018-08-16 22:06:58', ''),
-(2, 'BTC', 'ROL', 102.00, 0.000026, 4, '2018-08-16 22:07:15', ''),
-(3, 'BTC', 'ROL', 30.00, 0.000025, 1, '2018-08-16 22:06:58', '');
 
 -- --------------------------------------------------------
 
@@ -362,6 +360,16 @@ ALTER TABLE `api_access`
   ADD UNIQUE KEY `apikey` (`apikey`);
 
 --
+-- Indexes for table `markets`
+--
+ALTER TABLE `markets`
+  ADD PRIMARY KEY (`trade_id`),
+  ADD KEY `users_id` (`users_id`),
+  ADD KEY `base` (`base`),
+  ADD KEY `symbol` (`symbol`),
+  ADD KEY `trade_side` (`trade_side`);
+
+--
 -- Indexes for table `symbol_service`
 --
 ALTER TABLE `symbol_service`
@@ -375,22 +383,16 @@ ALTER TABLE `symbol_trade`
   ADD PRIMARY KEY (`symbol_id`);
 
 --
--- Indexes for table `trade_buy`
---
-ALTER TABLE `trade_buy`
-  ADD PRIMARY KEY (`trade_id`);
-
---
 -- Indexes for table `trade_history`
 --
 ALTER TABLE `trade_history`
   ADD PRIMARY KEY (`trade_id`);
 
 --
--- Indexes for table `trade_sell`
+-- Indexes for table `trade_invoice`
 --
-ALTER TABLE `trade_sell`
-  ADD PRIMARY KEY (`trade_id`);
+ALTER TABLE `trade_invoice`
+  ADD PRIMARY KEY (`invoice_id`);
 
 --
 -- Indexes for table `wallet_alt`
@@ -416,7 +418,7 @@ ALTER TABLE `wallet_btc`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=637;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `account_history`
 --
@@ -426,7 +428,7 @@ ALTER TABLE `account_history`
 -- AUTO_INCREMENT for table `account_login`
 --
 ALTER TABLE `account_login`
-  MODIFY `cache_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `cache_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 --
 -- AUTO_INCREMENT for table `admin`
 --
@@ -438,6 +440,11 @@ ALTER TABLE `admin`
 ALTER TABLE `api_access`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `markets`
+--
+ALTER TABLE `markets`
+  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
 -- AUTO_INCREMENT for table `symbol_service`
 --
 ALTER TABLE `symbol_service`
@@ -448,20 +455,15 @@ ALTER TABLE `symbol_service`
 ALTER TABLE `symbol_trade`
   MODIFY `symbol_id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
--- AUTO_INCREMENT for table `trade_buy`
---
-ALTER TABLE `trade_buy`
-  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
 -- AUTO_INCREMENT for table `trade_history`
 --
 ALTER TABLE `trade_history`
   MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
--- AUTO_INCREMENT for table `trade_sell`
+-- AUTO_INCREMENT for table `trade_invoice`
 --
-ALTER TABLE `trade_sell`
-  MODIFY `trade_id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+ALTER TABLE `trade_invoice`
+  MODIFY `invoice_id` bigint(20) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `wallet_btc`
 --
