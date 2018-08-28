@@ -18,7 +18,7 @@ class Publicapi extends API_Public {
 		$email = $this->input->post("email");
 		$arv = ["email" => $email, "password" => $password];
 
-        $arvs = $this->author->register($email, $password);
+        $arvs = $this->author_model->register($email, $password);
         
 		
 		$this->view($arvs);

@@ -3,7 +3,10 @@ class Author_Model extends DB_Model{
 
 	public $error = [];
 
-
+    function __construct()
+    {
+        parent::__construct();
+    }
 	public function register($email, $password) {
         $validate_email = $this->validate_email($email);
         $validate_password = $this->validate_password($password);
@@ -34,6 +37,7 @@ class Author_Model extends DB_Model{
     	$password = $this->validate_password($password);
     	$this->db->where("email", $email);
     	$this->db->where("password", $this->makePassword($password));
+
     	$data = $this->db->get("account")->row();
         
     	if($data){
