@@ -348,4 +348,62 @@ class Trade_Model extends DB_Model{
         return $target;
     }
 
+
+
+    /*
+    Create Update Balancer
+    For buyer & Seller
+    */
+    private function updateBlancerAlt($users_id, $symbol, $balancer, $target_form_user=false){
+        /*
+        Get Blancer
+        Target Blancer BTC Buyer
+        Query to target form user
+        */
+        $target = false;
+        if($target_form_user){
+            $this->db->where("users_id", $target_form_user);
+            $this->db->where("alt_symbol", $symbol);
+            $getbalancerTarget = $this->db->get("wallet_alt")->row();
+            $total = (float)$getbalancerTarget->alt_trade_avalible - (float)$balancer;
+
+
+            if($total <= 0){
+                return ["error" => "btcbalancer","msg" => "Buyer not BTC"];
+                exit();
+            }
+            $arv = [
+                "btc_trade_avalible" => $total
+            ];
+
+            $target = $this->db->update("wallet_alt",$arv,["alt_id" => $getbalancerTarget->alt_id]);
+
+            /*
+                Add Alt Balancer
+            */
+        }
+
+
+        /*
+        Update BTC for Seller
+        Query to users_id
+        */
+        if($target){
+            $this->db->where("users_id", $users_id);
+            $this->db->where("alt_symbol", $symbol);
+            $getbalancer = $this->db->get("wallet_alt")->row();
+
+            $arv = [
+                "alt_trade_avalible" => (float)$getbalancer->alt_trade_avalible + (float)$balancer
+            ];
+            $this->db->update("wallet_alt",$arv,["alt_id" => $getbalancer->alt_id]);
+
+            /*
+                Remove Alt Balancer
+            */
+        }
+        return $target;
+    }
+
+
 }

@@ -71,10 +71,12 @@ class Marketapi extends API_Public {
 		$this->db->select("*, sum(amount) as amount");
 		$this->db->where("symbol",$symbol);
 		$this->db->where("base",$base);
+
 		$this->db->where("trade_side","sell");
 		$this->db->where("trade_type","limit");
+
 		$this->db->group_by("prices");
-		$this->db->order_by("prices","DESC");
+		$this->db->order_by("prices","ASC");
 		$this->db->limit(20,0);
 		return $this->db->get("markets")->result();
 		
@@ -90,7 +92,7 @@ class Marketapi extends API_Public {
 		$this->db->where("trade_type","limit");
 
 		$this->db->group_by("prices");
-		$this->db->order_by("prices","ASC");
+		$this->db->order_by("prices","DESC");
 		$this->db->limit(20,0);
 		return $this->db->get("markets")->result();
 		
@@ -176,7 +178,7 @@ class Marketapi extends API_Public {
         $data = $this->db->query("select FLOOR(MIN(UNIX_TIMESTAMP(`created`))/$timeslice)*$timeslice AS created, SUM(amount) AS volume, SUBSTRING_INDEX(MIN(CONCAT(`created`, '_', prices)), '_', -1) AS `open`, MAX(prices) AS `high`, MIN(prices) AS `low`, SUBSTRING_INDEX(MAX(CONCAT(`created`, '_', prices)), '_', -1) AS `close` FROM trade_history WHERE base='".$base."' AND symbol='".$symbol."' GROUP BY FLOOR(UNIX_TIMESTAMP(`created`)/$timeslice) ORDER BY created")->result();
         //$this->view($data);exit();
 		
-		
+		//$data = $this->renderChart($offset, $timeslice, $limit);
 		//rsort($arv);
 		$this->view($data);
 	}
@@ -200,7 +202,7 @@ class Marketapi extends API_Public {
 				$obj->start = date('Y-m-d h:i:s',$end - $period);
 				$obj->end = date('Y-m-d h:i:s',$end);
 
-				$obj->track = $end;
+				$obj->created = $end;
 				$obj->openTime = $end * 1000;
 				$obj->open = 0;
 				$obj->low = 0;

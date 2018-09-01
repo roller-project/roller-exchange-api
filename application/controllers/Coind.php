@@ -53,4 +53,9 @@ class Coind extends Admin {
 		$data = $this->coind_model->listAllAddress("BTC");
 		print_r($data);
 	}
+
+	public function TextscanWalletBTC($ado){
+		$this->coind_model->DepositAlt($ado);
+		
+	}
 }
